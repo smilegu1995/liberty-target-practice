@@ -37,5 +37,9 @@ public class TargetArray extends IoTObject {
 	public void startGameCycle() {
 		sendCommand(TCPCommand.GAMESTART);
 	}
+	
+	public void stopGameCycle() {
+		sendCommand(TCPCommand.GAMESTOP);
+	}
 
 }

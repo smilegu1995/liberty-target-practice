@@ -1,8 +1,6 @@
 package io.openliberty.sentry.demo.model;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 
 import javax.enterprise.inject.Model;
@@ -55,10 +53,11 @@ public abstract class IoTObject implements IoTConnection{
 	public void sendCommand(TCPCommand c) {
 		String rawtcp = null;
 		if (c == TCPCommand.GAMESTART)
-			rawtcp = "GAMESTART";
+			rawtcp = "GSTR";
 		else if (c == TCPCommand.PING)
 			rawtcp = "ping";
-		
+		else if (c == TCPCommand.GAMESTOP)
+			rawtcp = "G";
 		try {
 			String response = tcpClient.sendCommand(rawtcp);
 			if (response.equals(TCPClient.TCP_ERROR)) {

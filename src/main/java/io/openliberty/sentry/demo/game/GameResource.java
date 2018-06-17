@@ -1,7 +1,6 @@
 package io.openliberty.sentry.demo.game;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -23,10 +22,7 @@ import io.openliberty.sentry.demo.model.Game;
 @ApplicationScoped
 @Path("game")
 public class GameResource {
-
-	@Inject
-	private Game game;
-	
+	final static Game game = Game.getInstance();
     @GET
     @Produces(MediaType.APPLICATION_JSON)
 	public JsonObject getGameStat() {
@@ -58,7 +54,7 @@ public class GameResource {
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
     	 String result = "no result";
     	 try {
-			result = String.valueOf(game.test());
+			//result = String.valueOf(game.test());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -72,23 +68,25 @@ public class GameResource {
     @Path("gamestream")
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public void gameDataStream(@Context SseEventSink eventSink, @Context Sse sse){
-    	game.startGameCycle();
     	
         Runnable r = new Runnable() {
             @Override
             public void run() {
+            	game.startGameCycle();
             	long start = System.currentTimeMillis();
-            	long end = start + Game.GAMETIME * 1000;
-            	int hitCount = 0;
-            	while (System.currentTimeMillis() < end){
+            	long end = start + Game.GAMETIME;
+            	int hitcount = 0;
+            	while (System.currentTimeMillis() < end && hitcount < 5){
                     game.waitForHitUpdate();
+                    hitcount++;
                     OutboundSseEvent event = sse.newEventBuilder()
                             .mediaType(MediaType.APPLICATION_JSON_TYPE)
-                            .data(String.class, "hit")
+                            .data(String.class, "hit" + hitcount)
                             .build();
-                        eventSink.send(event);
-                        System.out.println("Sending data "+ "hit");
+                    eventSink.send(event);
+                    System.out.println("Sending data "+ "hit" + hitcount);
             	}
+            	game.stopGameCycle();
             }
         };
         new Thread(r).start();   	
