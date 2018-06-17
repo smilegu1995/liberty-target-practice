@@ -4,6 +4,8 @@ import java.net.InetAddress;
 
 import javax.enterprise.inject.Model;
 
+import io.openliberty.sentry.demo.tcp.TCPCommand;
+
 @Model
 public class TargetArray extends IoTObject {
 
@@ -30,6 +32,10 @@ public class TargetArray extends IoTObject {
 	
 	public void setTargetState(){
 		
+	}
+	
+	public void startGameCycle() {
+		sendCommand(TCPCommand.GAMESTART);
 	}
 
 }

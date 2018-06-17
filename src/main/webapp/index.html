@@ -72,7 +72,18 @@
         <a href="https://groups.google.com/forum/#!forum/microprofile">MicroProfile Google group</a>.
     </p>
 </div>
-<div id="technologies">
+<div id="Current Game">
+  <h2>Game Stat:</h2>
+  <div id="Score">Song: </div>
+  <script>
+    var source = new EventSource('gameapp/game/gamestream');
+
+    source.onmessage = function(e) {
+        var score = e.data;
+        document.getElementById("Score").innerHTML = 'Score: ' + score;
+              console.log(score);
+      };
+  </script>
 </div>
 </body>
 </html>

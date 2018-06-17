@@ -25,6 +25,7 @@ public class GameStreamClient {
         String war = System.getProperty("app.context.root");
         
         Client client = ClientBuilder.newClient();
+        client.register(StringReader.class);
         WebTarget target = client.target("http://localhost:" + port + "/" + war + "/gameapp/game/gamestream");
         try (SseEventSource source = SseEventSource.target(target).build()) {
             source.register(new Consumer<InboundSseEvent>(){

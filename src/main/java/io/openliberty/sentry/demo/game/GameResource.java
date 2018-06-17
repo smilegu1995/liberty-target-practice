@@ -1,7 +1,5 @@
 package io.openliberty.sentry.demo.game;
 
-import java.io.IOException;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.Json;
@@ -74,23 +72,22 @@ public class GameResource {
     @Path("gamestream")
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public void gameDataStream(@Context SseEventSink eventSink, @Context Sse sse){
+    	game.startGameCycle();
+    	
         Runnable r = new Runnable() {
             @Override
             public void run() {
             	long start = System.currentTimeMillis();
-            	long end = start + 61 * 1000;
+            	long end = start + Game.GAMETIME * 1000;
+            	int hitCount = 0;
             	while (System.currentTimeMillis() < end){
+                    game.waitForHitUpdate();
                     OutboundSseEvent event = sse.newEventBuilder()
                             .mediaType(MediaType.APPLICATION_JSON_TYPE)
                             .data(String.class, "hit")
                             .build();
                         eventSink.send(event);
-                        try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+                        System.out.println("Sending data "+ "hit");
             	}
             }
         };

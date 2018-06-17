@@ -45,6 +45,13 @@ public class TCPClient {
     	return response;
     }
     
+	public String getData() throws IOException{
+        BufferedReader in =
+                new BufferedReader(
+                    new InputStreamReader(this.socket.getInputStream()));
+        return in.readLine();
+	}
+    
     public boolean isConnected(){
     	return this.socket.isConnected();
     }
