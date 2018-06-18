@@ -14,6 +14,7 @@ import javax.ws.rs.sse.OutboundSseEvent;
 import javax.ws.rs.sse.Sse;
 import javax.ws.rs.sse.SseEventSink;
 
+import io.openliberty.sentry.demo.model.GameEvent;
 import io.openliberty.sentry.demo.model.Game;
 
 //tag::header[]
@@ -73,16 +74,18 @@ public class GameResource {
             @Override
             public void run() {
             	game = Game.getInstance();
-            	game.startGameCycle();
+            	game.testGameCycle();
             	long start = System.currentTimeMillis();
             	long end = start + Game.GAMETIME;
             	int hitcount = 0;
             	while (System.currentTimeMillis() < end && hitcount < 5){
                     game.waitForHitUpdate();
                     hitcount++;
+                    GameEvent ge = new GameEvent();
+                    ge.setScore(game.getScore());
                     OutboundSseEvent event = sse.newEventBuilder()
                             .mediaType(MediaType.APPLICATION_JSON_TYPE)
-                            .data(String.class, "score " + game.getScore())
+                            .data(GameEvent.class, ge)
                             .build();
                     eventSink.send(event);
                     System.out.println("Sending data "+ "hit" + hitcount);
@@ -106,12 +109,15 @@ public class GameResource {
             	int score = 0;
             	while (System.currentTimeMillis() < end && hitcount < 5){
                     score += (hitcount * 50);
+                    GameEvent ge = new GameEvent();
+                    ge.setScore(score);
                     OutboundSseEvent event = sse.newEventBuilder()
                             .mediaType(MediaType.APPLICATION_JSON_TYPE)
-                            .data(String.class, "score " + score)
+                            .data(GameEvent.class, ge)
                             .build();
                     eventSink.send(event);
-                    System.out.println("Sending data "+ "hit" + hitcount);
+                    System.out.println("Sending data "+ "score " + score);
+                    hitcount++;
                     try {
 						Thread.sleep(2000);
 					} catch (InterruptedException e) {
@@ -119,7 +125,6 @@ public class GameResource {
 						e.printStackTrace();
 					};
             	}
-                hitcount++;
             }
         };
         new Thread(r).start();   	

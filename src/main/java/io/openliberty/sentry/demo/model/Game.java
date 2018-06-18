@@ -27,7 +27,7 @@ public class Game implements Runnable{
 	public Game() {
 		try {
 			targets = new TargetArray();
-			targets.setHost(InetAddress.getByName("10.0.1.4"), 80);
+			targets.setHost(InetAddress.getByName("10.0.1.2"), 80);
 			//targets.setHost(InetAddress.getByName("localhost"), 58784);
 			targets.connect();
 		} catch (UnknownHostException e) {
@@ -66,6 +66,11 @@ public class Game implements Runnable{
     public void startGameCycle() {
 		targets.startGameCycle();
     }
+    
+    public void testGameCycle() {
+		targets.testGameCycle();
+    }
+    
     public void start() {
     	running = true;
     	lastScoreTime = System.currentTimeMillis();
@@ -93,7 +98,7 @@ public class Game implements Runnable{
 				try {
 					String rxData = targets.getData();
 					System.out.println("received rxData: "+ rxData);
-					if (rxData != null) {
+					if (rxData != null && rxData.contains("hit")) {
 			            synchronized(this) {
 			            	iswaiting.set(false);
 			            	updateScore();

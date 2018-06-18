@@ -51,17 +51,23 @@ public abstract class IoTObject implements IoTConnection{
 	}
 	
 	public void sendCommand(TCPCommand c) {
+		int attempts = 0;
 		String rawtcp = null;
 		if (c == TCPCommand.GAMESTART)
 			rawtcp = "GSTR";
 		else if (c == TCPCommand.PING)
 			rawtcp = "ping";
 		else if (c == TCPCommand.GAMESTOP)
-			rawtcp = "G";
+			rawtcp = "GG";
+		else if (c == TCPCommand.TXTEST)
+			rawtcp = "TxTest";
 		try {
 			String response = tcpClient.sendCommand(rawtcp);
 			if (response.equals(TCPClient.TCP_ERROR)) {
 				throw new IOException("Message was sent and received an error");
+			}
+			while (!!!response.equals(TCPClient.TCP_OK) && attempts < 3){
+				response = tcpClient.sendCommand(rawtcp);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
