@@ -1,0 +1,45 @@
+<!DOCTYPE html >
+<html lang="en" >
+  <head>
+    <meta charset="UTF-8">
+    <title>OpenLiberty Space Sentry Challenge</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:200,400;Comfortaa:400" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Exo:700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Exo+2" rel="stylesheet">
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="row">
+       <div id="large-header" class="large-header">
+          <canvas id="demo-canvas"></canvas>
+          <div id="header" class="imgwrapper fixed-top" style="width:45%;margin:0px auto;"><img src="images/logo.png" class="img-responsive" alt="OpenLibertyGameLogo"></div>
+       </div>
+      </div>
+      <div class="row rowoverlay">
+        <div id="results" class="col-md-5 col-md-offset-4">
+          <div id="message"> Challenge Over! </div>
+          <div id="board" class='leaderboard'>
+            <h2 class="title"><img id="trophy" src="http://findicons.com/files/icons/2799/flat_icons/256/trophy.png">
+            LEADERBOARD
+            </h2>
+            <ol id="board" class="leaderboard"></ol>
+          </div>
+          <div id="tryAgain">
+            <button id="startOverBtn" class="pulse-button"> Restart Challenge ! </button>
+          </div>
+        </div>
+      </div>
+   </div>
+   <script src="js/leaderboard.js"></script>
+   <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/499416/TweenLite.min.js'></script>
+   <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/499416/EasePack.min.js'></script>
+   <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/499416/demo.js'></script>
+  </body>
+</html>
