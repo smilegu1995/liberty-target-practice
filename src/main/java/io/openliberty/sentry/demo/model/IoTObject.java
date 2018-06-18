@@ -72,6 +72,11 @@ public abstract class IoTObject implements IoTConnection{
 	}
 	
 	public String getData() throws IOException{
-        return tcpClient.getData();
+		int count = 0;
+		String rxData = null;
+		while ((rxData = tcpClient.getData()) == null  && count < 2) {
+			count++;
+		}
+        return rxData;
 	}
 }

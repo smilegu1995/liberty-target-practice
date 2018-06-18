@@ -22,7 +22,8 @@ import io.openliberty.sentry.demo.model.Game;
 @ApplicationScoped
 @Path("game")
 public class GameResource {
-	final static Game game = Game.getInstance();
+
+	static Game game;
     @GET
     @Produces(MediaType.APPLICATION_JSON)
 	public JsonObject getGameStat() {
@@ -68,10 +69,10 @@ public class GameResource {
     @Path("gamestream")
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public void gameDataStream(@Context SseEventSink eventSink, @Context Sse sse){
-    	
         Runnable r = new Runnable() {
             @Override
             public void run() {
+            	game = Game.getInstance();
             	game.startGameCycle();
             	long start = System.currentTimeMillis();
             	long end = start + Game.GAMETIME;

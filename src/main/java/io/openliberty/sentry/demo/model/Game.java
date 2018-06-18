@@ -3,25 +3,29 @@ package io.openliberty.sentry.demo.model;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+
 
 @ApplicationScoped
 public class Game implements Runnable{
 	
-	private TargetArray targets;
+	private static TargetArray targets;
 	
-	private boolean running;
+	private boolean running = false;
+	
+	private AtomicBoolean iswaiting = new AtomicBoolean(false);
 	
 	public static final int GAMETIME = 60000;
 	
-	public static Game gameinstance = new Game();
+	private static Game gameinstance = new Game();
 	
 	public Game() {
 		try {
 			targets = new TargetArray();
 			targets.setHost(InetAddress.getByName("192.168.0.11"), 80);
+			//targets.setHost(InetAddress.getByName("localhost"), 58784);
 			targets.connect();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -36,8 +40,8 @@ public class Game implements Runnable{
 	}
 	
 	public synchronized static Game getInstance() {
-		if (gameinstance == null) {
-			return new Game();
+		if (!!!gameinstance.isRunning()) {
+			gameinstance.start();
 		}
 		return gameinstance;
 	}
@@ -46,11 +50,6 @@ public class Game implements Runnable{
 		return targets.ping();
 	}
 	
-	public void startGameCycle() {
-		if (!!!gameinstance.isRunning()) {
-			gameinstance.start();
-		}
-	}
 	
     public boolean isRunning() {
         return running;
@@ -58,10 +57,14 @@ public class Game implements Runnable{
     
     public void stopGameCycle() {
     	running = false;
+    	iswaiting.set(false);;
     }
 	
+    public void startGameCycle() {
+		targets.startGameCycle();
+    }
     public void start() {
-        running = true;
+    	running = true;
         Thread t = new Thread(this);
         t.setDaemon(true);
         t.start();
@@ -69,7 +72,9 @@ public class Game implements Runnable{
 	
 	public synchronized void waitForHitUpdate(){
         try {
-            wait();
+        	System.out.println("putting the thread to wait");
+        	iswaiting.set(true);
+        	wait();
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }		
@@ -78,18 +83,22 @@ public class Game implements Runnable{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		targets.startGameCycle();
+		System.out.println("Start running on new thread " + String.valueOf(running));
 		while (running){
-			try {
-				String rxData = targets.getData();
-				if (rxData != null) {
-		            synchronized(this) {
-		                this.notifyAll();
-		            }
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (iswaiting.get()) {
+				try {
+					String rxData = targets.getData();
+					System.out.println("received rxData: "+ rxData);
+					if (rxData != null) {
+			            synchronized(this) {
+			            	iswaiting.set(false);;
+			                this.notifyAll();
+			            }
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
 			}
 		}
 		targets.stopGameCycle();
