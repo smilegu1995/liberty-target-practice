@@ -82,12 +82,44 @@ public class GameResource {
                     hitcount++;
                     OutboundSseEvent event = sse.newEventBuilder()
                             .mediaType(MediaType.APPLICATION_JSON_TYPE)
-                            .data(String.class, "hit" + hitcount)
+                            .data(String.class, "score " + game.getScore())
                             .build();
                     eventSink.send(event);
                     System.out.println("Sending data "+ "hit" + hitcount);
             	}
             	game.stopGameCycle();
+            }
+        };
+        new Thread(r).start();   	
+    }
+    
+    @GET
+    @Path("gamestreamtest")
+    @Produces(MediaType.SERVER_SENT_EVENTS)
+    public void gameDataStreamTest(@Context SseEventSink eventSink, @Context Sse sse){
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+            	long start = System.currentTimeMillis();
+            	long end = start + Game.GAMETIME;
+            	int hitcount = 0;
+            	int score = 0;
+            	while (System.currentTimeMillis() < end && hitcount < 5){
+                    score += (hitcount * 50);
+                    OutboundSseEvent event = sse.newEventBuilder()
+                            .mediaType(MediaType.APPLICATION_JSON_TYPE)
+                            .data(String.class, "score " + score)
+                            .build();
+                    eventSink.send(event);
+                    System.out.println("Sending data "+ "hit" + hitcount);
+                    try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					};
+            	}
+                hitcount++;
             }
         };
         new Thread(r).start();   	

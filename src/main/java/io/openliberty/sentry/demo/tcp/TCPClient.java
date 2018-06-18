@@ -13,23 +13,25 @@ public class TCPClient {
 	
 	private Socket socket;
     private String latestResponse;
+    private PrintWriter out;
+    private BufferedReader in;
     public static final String TCP_ERROR = "tcp_error";
     public static final String TCP_OK = "ok";
+    
     
     public TCPClient(InetAddress serverAddress, int serverPort) throws Exception {
     	host = serverAddress;
     	port = serverPort;
         this.socket = new Socket(serverAddress, serverPort);
+        out = new PrintWriter(this.socket.getOutputStream(), true);
+        in = new BufferedReader(
+                    new InputStreamReader(this.socket.getInputStream()));
     }
     
     public String sendCommand(String c) throws IOException{
     	String response = null;
     	int attempts = 0;
     	while (response == null && attempts < 5){
-    		PrintWriter out = new PrintWriter(this.socket.getOutputStream(), true);
-            BufferedReader in =
-                    new BufferedReader(
-                        new InputStreamReader(this.socket.getInputStream()));
             out.println(c);
             out.flush();
             response = in.readLine();
@@ -46,9 +48,6 @@ public class TCPClient {
     }
     
 	public String getData() throws IOException{
-        BufferedReader in =
-                new BufferedReader(
-                    new InputStreamReader(this.socket.getInputStream()));
         return in.readLine();
 	}
     

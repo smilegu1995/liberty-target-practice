@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -15,7 +16,9 @@ public class Game implements Runnable{
 	
 	private boolean running = false;
 	
+	private long lastScoreTime;
 	private AtomicBoolean iswaiting = new AtomicBoolean(false);
+	private AtomicInteger score = new AtomicInteger(0);
 	
 	public static final int GAMETIME = 60000;
 	
@@ -24,7 +27,7 @@ public class Game implements Runnable{
 	public Game() {
 		try {
 			targets = new TargetArray();
-			targets.setHost(InetAddress.getByName("192.168.0.11"), 80);
+			targets.setHost(InetAddress.getByName("10.0.1.4"), 80);
 			//targets.setHost(InetAddress.getByName("localhost"), 58784);
 			targets.connect();
 		} catch (UnknownHostException e) {
@@ -65,6 +68,7 @@ public class Game implements Runnable{
     }
     public void start() {
     	running = true;
+    	lastScoreTime = System.currentTimeMillis();
         Thread t = new Thread(this);
         t.setDaemon(true);
         t.start();
@@ -91,7 +95,9 @@ public class Game implements Runnable{
 					System.out.println("received rxData: "+ rxData);
 					if (rxData != null) {
 			            synchronized(this) {
-			            	iswaiting.set(false);;
+			            	iswaiting.set(false);
+			            	updateScore();
+			            	lastScoreTime = System.currentTimeMillis();
 			                this.notifyAll();
 			            }
 					}
@@ -103,5 +109,19 @@ public class Game implements Runnable{
 		}
 		targets.stopGameCycle();
 		//read tcp message in while loop
+	}
+	
+	public synchronized void updateScore(){
+		long scoreInterval = (System.currentTimeMillis() - lastScoreTime) / 1000;
+		int timeBonus = 10;
+		if (scoreInterval != 0)
+			timeBonus += (int) (100 / scoreInterval);
+		System.out.println("Score 50 + Time Bonus " + timeBonus);
+		score.addAndGet(50);
+		score.addAndGet(timeBonus);
+	}
+	
+	public int getScore(){
+		return score.get();
 	}
 }
