@@ -15,6 +15,7 @@ var leaders = [{
   points: "134"
 }];
 var x;
+var finalScore = $("#finalScore").val();
 
 for (x in leaders) {
   document.getElementById('board').innerHTML +=
@@ -24,6 +25,25 @@ for (x in leaders) {
     '<small class="pts">' + leaders[x].points +
     '</small></li>';
   console.log(leaders[x]);
+}
+
+
+// Run on the page load
+$(endGame());
+
+function endGame() {
+  // Create EventSource object
+  var source = new EventSource('/SentryTargetChallenge/gameapp/game/gamestream');
+
+  source.onmessage = function(e) {
+    showFinalScore(e);
+  };
+}
+
+function showFinalScore(event) {
+  console.log("EVENT DATA: " + event.data);
+  var gameevent = JSON.parse(event.data);
+  finalScore.textContent = gameevent.score;
 }
 
 $("#startOverBtn").click(function() {

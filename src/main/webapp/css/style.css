@@ -28,7 +28,7 @@
 @media all and (min-width: 1090px) {
 
 	#results {
-	/**/
+    margin: 0 36% auto;
 	}
 
   .interface {
@@ -179,9 +179,16 @@ html, body {
 #message {
 	color: #f47e61;
 	width: 100%;
-	margin: 40% 10% 5%;
+	margin: 38% 12% 5%;
 	font-size: 50px;
   font-family: 'Exo', sans-serif;
+}
+
+#finalScoreWrapper {
+  font-family: 'Exo', sans-serif;
+  font-size: 40px;
+  margin: -4% 16% 2%;
+  color: #997fe6;
 }
 
 *{ margin:0;
