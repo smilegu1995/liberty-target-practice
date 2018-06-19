@@ -41,7 +41,8 @@ var bind = Function.prototype.bind,
           wait ? setTimeout(next, wait) : next();
           if (jQuery.inArray("#", args) != -1) {
             bgMusic.pause();
-            showCountDown();
+            setTimeout("pageRedirect()", 1000);
+            //showCountDown();
           }
         }
       }
