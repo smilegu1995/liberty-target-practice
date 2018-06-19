@@ -10,14 +10,17 @@ function startGame() {
   runTimer();
 
   // Create EventSource object
-  var source = new EventSource('/game');
+  var source = new EventSource('/SentryTargetChallenge/gameapp/game/gamestream');
 
-  source.addEventListener('score', updateScore, false);
+  source.onmessage = function(e) {
+	  updateScore(e);
+  };
 }
 
 function updateScore(event) {
   console.log("EVENT DATA: " + event.data);
-  scoreVal.textContent = JSON.parse(event.data);
+  var gameevent = JSON.parse(event.data);
+  scoreVal.textContent = gameevent.score;
 }
 
 function displayTime(decSeconds) {
