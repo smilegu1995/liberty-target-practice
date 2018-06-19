@@ -55,6 +55,9 @@ public class GameResource {
         // tag::method-contents[]
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
     	 String result = "no result";
+    	 if (game == null)
+    		 game = Game.getInstance();
+     	 game.startGameCycle();
     	 try {
 			//result = String.valueOf(game.test());
 		} catch (Exception e) {
@@ -73,12 +76,11 @@ public class GameResource {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-            	game = Game.getInstance();
-            	game.testGameCycle();
             	long start = System.currentTimeMillis();
             	long end = start + Game.GAMETIME;
             	int hitcount = 0;
             	while (System.currentTimeMillis() < end && hitcount < 5){
+            		//game = Game.getInstance();
                     game.waitForHitUpdate();
                     hitcount++;
                     GameEvent ge = new GameEvent();

@@ -48,6 +48,7 @@ public class TCPClient {
     }
     
 	public String getData() throws IOException{
+		System.out.println("get Data on TCPClient");
         return in.readLine();
 	}
     

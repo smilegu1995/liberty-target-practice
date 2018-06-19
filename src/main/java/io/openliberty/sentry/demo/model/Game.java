@@ -12,7 +12,7 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class Game implements Runnable{
 	
-	private static TargetArray targets;
+	private TargetArray targets;
 	
 	private boolean running = false;
 	
@@ -27,7 +27,7 @@ public class Game implements Runnable{
 	public Game() {
 		try {
 			targets = new TargetArray();
-			targets.setHost(InetAddress.getByName("10.0.1.2"), 80);
+			targets.setHost(InetAddress.getByName("192.168.0.11"), 80);
 			//targets.setHost(InetAddress.getByName("localhost"), 58784);
 			targets.connect();
 		} catch (UnknownHostException e) {
@@ -59,11 +59,15 @@ public class Game implements Runnable{
     }
     
     public void stopGameCycle() {
+    	System.out.println("Stop game cycle");
     	running = false;
     	iswaiting.set(false);;
+    	targets.stopGameCycle();
     }
 	
     public void startGameCycle() {
+    	if (!!!running)
+    		running = true;
 		targets.startGameCycle();
     }
     
@@ -92,10 +96,12 @@ public class Game implements Runnable{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		System.out.println("Start running on new thread " + String.valueOf(running));
+		System.out.println("Start game on new thread " + String.valueOf(running));
 		while (running){
 			if (iswaiting.get()) {
+				System.out.println("Detect the other thread in wait");
 				try {
+					System.out.println("Entering try block");
 					String rxData = targets.getData();
 					System.out.println("received rxData: "+ rxData);
 					if (rxData != null && rxData.contains("hit")) {
