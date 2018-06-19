@@ -1,18 +1,18 @@
 var leaders = [{
-  name: "John Doe",
+  name: "Libby",
   points: "124321"
 }, {
-  name: "Test 1",
+  name: "Rosie",
   points: "28415"
 }, {
-  name: "Test 2",
+  name: "Maven",
   points: "14231"
 }, {
-  name: "Test 3",
+  name: "Marvin",
   points: "2321"
 }, {
-  name: "Test 4",
-  points: "134"
+  name: "Martian",
+  points: "1134"
 }];
 var x;
 var finalScore = $("#finalScore").val();
@@ -32,18 +32,15 @@ for (x in leaders) {
 $(endGame());
 
 function endGame() {
-  // Create EventSource object
-  var source = new EventSource('/SentryTargetChallenge/gameapp/game/gamestream');
-
-  source.onmessage = function(e) {
-    showFinalScore(e);
-  };
+  $.get("/SentryTargetChallenge/gameapp/game/leaderboard", function(data) {
+    showFinalScore(data);
+  });
 }
 
-function showFinalScore(event) {
-  console.log("EVENT DATA: " + event.data);
-  var gameevent = JSON.parse(event.data);
-  finalScore.textContent = gameevent.score;
+function showFinalScore(data) {
+  console.log("GET DATA: " + data);
+  var score = JSON.parse(data);
+  finalScore.textContent = score;
 }
 
 $("#startOverBtn").click(function() {
