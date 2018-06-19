@@ -104,7 +104,7 @@ var numberStage,
   stageCenterY = stageHeight / 2,
 
   countdownFrom = 3,
-  countdownTimer = 1800,
+  countdownTimer = 2500,
   countdownRunning = true,
 
   number,
