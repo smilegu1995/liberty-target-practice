@@ -44,7 +44,7 @@ public class TCPClient {
     		latestResponse = TCP_ERROR;
     	
  
-    	return response;
+    	return latestResponse;
     }
     
 	public String getData() throws IOException{

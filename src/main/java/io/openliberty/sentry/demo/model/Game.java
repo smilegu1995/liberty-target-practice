@@ -27,7 +27,7 @@ public class Game implements Runnable{
 	public Game() {
 		try {
 			targets = new TargetArray();
-			targets.setHost(InetAddress.getByName("192.168.0.11"), 80);
+			targets.setHost(InetAddress.getByName("10.0.1.2"), 80);
 			//targets.setHost(InetAddress.getByName("localhost"), 58784);
 			targets.connect();
 		} catch (UnknownHostException e) {

@@ -3,6 +3,20 @@ $("#startBtn").click(function() {
   initializeGame();
 });
 
-function intializeGame() {
+function initializeGame() {
   // To Do
+	var user = $("#userName").val();
+	
+	$.ajax({
+		  type: "POST",
+		  url: "/SentryTargetChallenge/gameapp/game",
+		  data: user,
+		  success: success,
+		  dataType: "text"
+		});
+	
+}
+
+function success() {
+	console.log("game started!");
 }
