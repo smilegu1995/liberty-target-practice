@@ -13,10 +13,10 @@ import javax.enterprise.context.ApplicationScoped;
 public class Game implements Runnable{
 	
 	private TargetArray targets;
+	private SentryTurret sentry;
 	
 	private boolean running = false;
 	
-	private long lastScoreTime;
 	private AtomicBoolean iswaiting = new AtomicBoolean(false);
 	private AtomicInteger score = new AtomicInteger(0);
 	
@@ -27,7 +27,10 @@ public class Game implements Runnable{
 	public Game() {
 		try {
 			targets = new TargetArray();
-			targets.setHost(InetAddress.getByName("10.0.1.2"), 80);
+			targets.setHost(InetAddress.getByName("10.0.1.3"), 80);
+			sentry = new SentryTurret();
+			sentry.setHost(InetAddress.getByName("10.0.1.2"), 80);
+			sentry.connect();
 			//targets.setHost(InetAddress.getByName("localhost"), 58784);
 			targets.connect();
 		} catch (UnknownHostException e) {
@@ -58,29 +61,42 @@ public class Game implements Runnable{
         return running;
     }
     
-    public void stopGameCycle() {
+    public void stopGameCycle() throws Exception {
     	System.out.println("Stop game cycle");
     	running = false;
-    	iswaiting.set(false);;
+    	iswaiting.set(false);
     	targets.stopGameCycle();
     }
 	
-    public void startGameCycle() {
+    public void startGameCycle() throws Exception {
     	if (!!!running)
     		running = true;
 		targets.startGameCycle();
+		sentry.startGun();
     }
     
-    public void testGameCycle() {
+    public void testGameCycle() throws Exception {
 		targets.testGameCycle();
     }
     
     public void start() {
     	running = true;
-    	lastScoreTime = System.currentTimeMillis();
         Thread t = new Thread(this);
         t.setDaemon(true);
         t.start();
+    }
+    
+    public void reset() throws Exception{
+    	System.out.println("resetting the game");
+    	running = false;
+    	score.set(0);
+    	iswaiting.set(false);
+        synchronized(this) {
+        	iswaiting.set(false);
+            this.notifyAll();
+        }
+    	targets.stopGameCycle();
+    	
     }
 	
 	public synchronized void waitForHitUpdate(){
@@ -96,6 +112,13 @@ public class Game implements Runnable{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		try {
+			targets.connect();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		score.set(0);
 		System.out.println("Start game on new thread " + String.valueOf(running));
 		while (running){
 			if (iswaiting.get()) {
@@ -108,7 +131,6 @@ public class Game implements Runnable{
 			            synchronized(this) {
 			            	iswaiting.set(false);
 			            	updateScore();
-			            	lastScoreTime = System.currentTimeMillis();
 			                this.notifyAll();
 			            }
 					}
@@ -118,18 +140,33 @@ public class Game implements Runnable{
 				}				
 			}
 		}
-		targets.stopGameCycle();
+		System.out.println("finished running on game thread");
+        synchronized(this) {
+        	int count = 0;
+        	while (count < 3) {
+            	if(iswaiting.get())
+            		this.notifyAll();
+            	count++;
+            	try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+
+        }
 		//read tcp message in while loop
 	}
 	
 	public synchronized void updateScore(){
-		long scoreInterval = (System.currentTimeMillis() - lastScoreTime) / 1000;
-		int timeBonus = 10;
-		if (scoreInterval != 0)
-			timeBonus += (int) (100 / scoreInterval);
-		System.out.println("Score 50 + Time Bonus " + timeBonus);
-		score.addAndGet(50);
-		score.addAndGet(timeBonus);
+		//long scoreInterval = (System.currentTimeMillis() - lastScoreTime) / 1000;
+		//int timeBonus = 10;
+		//if (scoreInterval != 0)
+			//timeBonus += (int) (100 / scoreInterval);
+		//System.out.println("Score 50 + Time Bonus " + timeBonus);
+		score.addAndGet(100);
+		//score.addAndGet(timeBonus);
 	}
 	
 	public int getScore(){

@@ -4,5 +4,6 @@ public enum TCPCommand {
 	GAMESTART,
 	GAMESTOP,
 	PING,
+	GUNSTART,
 	TXTEST
 }

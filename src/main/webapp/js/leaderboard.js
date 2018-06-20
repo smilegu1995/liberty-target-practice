@@ -15,7 +15,7 @@ var leaders = [{
   points: "1134"
 }];
 var x;
-var finalScore = $("#finalScore").val();
+var finalScore = document.getElementById('finalScore');
 
 for (x in leaders) {
   document.getElementById('board').innerHTML +=
@@ -38,9 +38,10 @@ function endGame() {
 }
 
 function showFinalScore(data) {
-  console.log("GET DATA: " + data);
-  var score = JSON.parse(data);
-  finalScore.textContent = score;
+  console.log("GET DATA: " + JSON.stringify(data));
+  //var score = JSON.parse(data);
+  console.log("GET score: " + data.score);
+  finalScore.textContent = data.score;
 }
 
 $("#startOverBtn").click(function() {

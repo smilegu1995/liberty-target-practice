@@ -57,7 +57,9 @@ public abstract class IoTObject implements IoTConnection{
 		else if (c == TCPCommand.PING)
 			rawtcp = "ping";
 		else if (c == TCPCommand.GAMESTOP)
-			rawtcp = "G";
+			rawtcp = "GG";
+		else if (c == TCPCommand.GUNSTART)
+			rawtcp = "START";
 		try {
 			String response = tcpClient.sendCommand(rawtcp);
 			if (response.equals(TCPClient.TCP_ERROR)) {

@@ -1,5 +1,7 @@
 package io.openliberty.sentry.demo.game;
 
+import java.io.IOException;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -43,21 +45,52 @@ public class GameResource {
     public JsonObject listLeaderBoard() {
         // tag::method-contents[]
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
-    	 builder.add("game", "listleaderboard");
+    	 if (game != null)
+    		 builder.add("score", String.valueOf(game.getScore()));
+    	 else 
+    		 builder.add("score", "0");
     	 return builder.build();
 
     	 // end::method-contents[]
     }
     // end::listContents[]
     
+    // tag::listContents[]
+    @POST
+    @Path("reset")
+    @Produces(MediaType.APPLICATION_JSON)
+    public JsonObject reset() {
+        // tag::method-contents[]
+    	 if (game != null){
+ 			try {
+				game.reset();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	 }
+
+    	 
+    	 JsonObjectBuilder builder = Json.createObjectBuilder();
+    	 builder.add("result", "success");
+    	 return builder.build();
+
+    	 // end::method-contents[]
+    }
+    
+    
     @POST
     public JsonObject newGame(){
         // tag::method-contents[]
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
     	 String result = "no result";
-    	 if (game == null)
-    		 game = Game.getInstance();
-     	 game.startGameCycle();
+    	 game = Game.getInstance();
+     	 try {
+			game.startGameCycle();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     	 try {
 			//result = String.valueOf(game.test());
 		} catch (Exception e) {
@@ -79,7 +112,7 @@ public class GameResource {
             	long start = System.currentTimeMillis();
             	long end = start + Game.GAMETIME;
             	int hitcount = 0;
-            	while (System.currentTimeMillis() < end && hitcount < 5){
+            	while (System.currentTimeMillis() < end && game.isRunning()){
             		//game = Game.getInstance();
                     game.waitForHitUpdate();
                     hitcount++;
@@ -92,7 +125,14 @@ public class GameResource {
                     eventSink.send(event);
                     System.out.println("Sending data "+ "hit" + hitcount);
             	}
-            	game.stopGameCycle();
+            	System.out.println("Finished running on End points");
+				try {
+					if (game != null)
+						game.stopGameCycle();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         };
         new Thread(r).start();   	

@@ -1,5 +1,6 @@
 package io.openliberty.sentry.demo.model;
 
+import java.io.IOException;
 import java.net.InetAddress;
 
 import javax.enterprise.inject.Model;
@@ -34,15 +35,16 @@ public class TargetArray extends IoTObject {
 		
 	}
 	
-	public void startGameCycle() {
+	public void startGameCycle() throws Exception {
 		sendCommand(TCPCommand.GAMESTART);
 	}
 	
-	public void stopGameCycle() {
+	public void stopGameCycle() throws Exception {
 		sendCommand(TCPCommand.GAMESTOP);
+		disconnect();
 	}
 	
-	public void testGameCycle() {
+	public void testGameCycle() throws Exception {
 		sendCommand(TCPCommand.TXTEST);
 	}
 
