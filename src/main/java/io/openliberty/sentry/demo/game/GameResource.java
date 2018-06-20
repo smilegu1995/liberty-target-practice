@@ -84,7 +84,8 @@ public class GameResource {
         // tag::method-contents[]
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
     	 String result = "no result";
-    	 game = Game.getInstance();
+    	 game = new Game();
+    	 game.start();
      	 try {
 			game.startGameCycle();
 		} catch (Exception e1) {
@@ -126,17 +127,52 @@ public class GameResource {
                     System.out.println("Sending data "+ "hit" + hitcount);
             	}
             	System.out.println("Finished running on End points");
+            	try {
+					game.stopGameCycle();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            	game = null;
+            	System.out.println("game cleaned up successfully");
+            	/*
 				try {
 					if (game != null)
 						game.stopGameCycle();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
+				}*/
             }
         };
         new Thread(r).start();   	
     }
+    
+    
+    @POST
+    @Path("txtest")
+    public JsonObject newTest(){
+        // tag::method-contents[]
+    	 JsonObjectBuilder builder = Json.createObjectBuilder();
+    	 String result = "no result";
+    	 game = new Game();
+     	 try {
+			game.testGameCycle();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    	 try {
+			//result = String.valueOf(game.test());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	 builder.add("game", "newGame");
+    	 builder.add("result", result);
+    	 return builder.build();
+    }
+    
     
     @GET
     @Path("gamestreamtest")
@@ -148,27 +184,38 @@ public class GameResource {
             	long start = System.currentTimeMillis();
             	long end = start + Game.GAMETIME;
             	int hitcount = 0;
-            	int score = 0;
-            	while (System.currentTimeMillis() < end && hitcount < 5){
-                    score += (hitcount * 50);
+            	while (System.currentTimeMillis() < end && game.isRunning()){
+            		//game = Game.getInstance();
+                    game.waitForHitUpdate();
+                    hitcount++;
                     GameEvent ge = new GameEvent();
-                    ge.setScore(score);
+                    ge.setScore(game.getScore());
                     OutboundSseEvent event = sse.newEventBuilder()
                             .mediaType(MediaType.APPLICATION_JSON_TYPE)
                             .data(GameEvent.class, ge)
                             .build();
                     eventSink.send(event);
-                    System.out.println("Sending data "+ "score " + score);
-                    hitcount++;
-                    try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					};
+                    System.out.println("Sending data "+ "hit" + hitcount);
             	}
+            	System.out.println("Finished running on End points");
+            	try {
+					game.stopGameCycle();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            	/*
+				try {
+					if (game != null)
+						game.stopGameCycle();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}*/
             }
         };
         new Thread(r).start();   	
     }
+    
+    
 }

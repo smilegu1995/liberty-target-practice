@@ -36,12 +36,16 @@ public class TargetArray extends IoTObject {
 	}
 	
 	public void startGameCycle() throws Exception {
-		sendCommand(TCPCommand.GAMESTART);
+		int count = 2;
+		while (count != 0) {
+			sendCommand(TCPCommand.GAMESTART);
+			count--;
+		}
+		
 	}
 	
 	public void stopGameCycle() throws Exception {
 		sendCommand(TCPCommand.GAMESTOP);
-		disconnect();
 	}
 	
 	public void testGameCycle() throws Exception {

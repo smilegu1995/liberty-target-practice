@@ -49,7 +49,10 @@ public class TCPClient {
     
 	public String getData() throws IOException{
 		System.out.println("get Data on TCPClient");
-        return in.readLine();
+		String rxData = in.readLine();
+		System.out.println("got Data on TCPClient " + rxData);
+        return rxData;
+
 	}
     
     public boolean isConnected(){

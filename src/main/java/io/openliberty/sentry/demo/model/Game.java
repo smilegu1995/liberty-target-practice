@@ -22,15 +22,15 @@ public class Game implements Runnable{
 	
 	public static final int GAMETIME = 60000;
 	
-	private static Game gameinstance = new Game();
+	//private static Game gameinstance = new Game();
 	
 	public Game() {
 		try {
 			targets = new TargetArray();
-			targets.setHost(InetAddress.getByName("10.0.1.3"), 80);
-			sentry = new SentryTurret();
-			sentry.setHost(InetAddress.getByName("10.0.1.2"), 80);
-			sentry.connect();
+			targets.setHost(InetAddress.getByName("192.168.0.11"), 80);
+			//sentry = new SentryTurret();
+			//sentry.setHost(InetAddress.getByName("10.0.1.2"), 80);
+			//sentry.connect();
 			//targets.setHost(InetAddress.getByName("localhost"), 58784);
 			targets.connect();
 		} catch (UnknownHostException e) {
@@ -45,12 +45,13 @@ public class Game implements Runnable{
 
 	}
 	
+	/*
 	public synchronized static Game getInstance() {
 		if (!!!gameinstance.isRunning()) {
 			gameinstance.start();
 		}
 		return gameinstance;
-	}
+	}*/
 	
 	public boolean test() throws IOException {
 		return targets.ping();
@@ -61,18 +62,18 @@ public class Game implements Runnable{
         return running;
     }
     
-    public void stopGameCycle() throws Exception {
+    public void stopGameCycle() throws IOException {
     	System.out.println("Stop game cycle");
     	running = false;
     	iswaiting.set(false);
-    	targets.stopGameCycle();
+    	targets.disconnect();
     }
 	
     public void startGameCycle() throws Exception {
     	if (!!!running)
     		running = true;
 		targets.startGameCycle();
-		sentry.startGun();
+		//sentry.startGun();
     }
     
     public void testGameCycle() throws Exception {
@@ -90,7 +91,6 @@ public class Game implements Runnable{
     	System.out.println("resetting the game");
     	running = false;
     	score.set(0);
-    	iswaiting.set(false);
         synchronized(this) {
         	iswaiting.set(false);
             this.notifyAll();
@@ -127,12 +127,20 @@ public class Game implements Runnable{
 					System.out.println("Entering try block");
 					String rxData = targets.getData();
 					System.out.println("received rxData: "+ rxData);
-					if (rxData != null && rxData.contains("hit")) {
-			            synchronized(this) {
-			            	iswaiting.set(false);
-			            	updateScore();
-			                this.notifyAll();
-			            }
+					if (rxData != null) {
+						if (rxData.contains("hit")) {
+				            synchronized(this) {
+				            	iswaiting.set(false);
+				            	updateScore();
+				                this.notifyAll();
+				            }
+						} else if (rxData.contains("end")){
+				            synchronized(this) {
+				            	iswaiting.set(false);
+				            	running = false;
+				                this.notifyAll();
+				            }
+						}
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -141,6 +149,7 @@ public class Game implements Runnable{
 			}
 		}
 		System.out.println("finished running on game thread");
+		/*
         synchronized(this) {
         	int count = 0;
         	while (count < 3) {
@@ -155,7 +164,7 @@ public class Game implements Runnable{
 				}
         	}
 
-        }
+        }*/
 		//read tcp message in while loop
 	}
 	
