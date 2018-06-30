@@ -110,10 +110,8 @@ public class GameResource {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-            	long start = System.currentTimeMillis();
-            	long end = start + Game.GAMETIME;
             	int hitcount = 0;
-            	while (System.currentTimeMillis() < end && game.isRunning()){
+            	while (game.isRunning()){
             		//game = Game.getInstance();
                     game.waitForHitUpdate();
                     hitcount++;
@@ -156,6 +154,7 @@ public class GameResource {
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
     	 String result = "no result";
     	 game = new Game();
+    	 game.start();
      	 try {
 			game.testGameCycle();
 		} catch (Exception e1) {

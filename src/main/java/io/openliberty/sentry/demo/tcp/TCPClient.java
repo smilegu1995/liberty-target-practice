@@ -49,6 +49,7 @@ public class TCPClient {
     
 	public String getData() throws IOException{
 		System.out.println("get Data on TCPClient");
+		this.socket.setSoTimeout(30000);
 		String rxData = in.readLine();
 		System.out.println("got Data on TCPClient " + rxData);
         return rxData;

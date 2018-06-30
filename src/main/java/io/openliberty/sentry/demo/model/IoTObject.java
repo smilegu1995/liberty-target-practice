@@ -60,6 +60,8 @@ public abstract class IoTObject implements IoTConnection{
 			rawtcp = "GG";
 		else if (c == TCPCommand.GUNSTART)
 			rawtcp = "START";
+		else if (c == TCPCommand.TXTEST)
+			rawtcp = "T_X";
 		try {
 			String response = tcpClient.sendCommand(rawtcp);
 			if (response.equals(TCPClient.TCP_ERROR)) {
