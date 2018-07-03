@@ -1,8 +1,6 @@
 package io.openliberty.sentry.demo.model;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -24,25 +22,11 @@ public class Game implements Runnable{
 	
 	//private static Game gameinstance = new Game();
 	
-	public Game() {
-		try {
-			targets = new TargetArray();
-			targets.setHost(InetAddress.getByName("10.0.1.3"), 80);
-			//sentry = new SentryTurret();
-			//sentry.setHost(InetAddress.getByName("10.0.1.2"), 80);
-			//sentry.connect();
-			//targets.setHost(InetAddress.getByName("localhost"), 58784);
-			targets.connect();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Unable to create a game due to incorrect target host and ip");
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			System.out.println("Unable to create a game due to incorrect target host and ip");
-			e.printStackTrace();
+	public Game() throws Exception {
+		targets = TargetArray.getInstance();
+		if (targets == null) {
+			throw new Exception("Targets array is not connected. Game cannot be started");
 		}
-
 	}
 	
 	/*
@@ -62,16 +46,22 @@ public class Game implements Runnable{
         return running;
     }
     
-    public void stopGameCycle() throws IOException {
+    public void stopGameCycle() throws Exception {
     	System.out.println("Stop game cycle");
     	running = false;
     	iswaiting.set(false);
-    	targets.disconnect();
+    	targets.stopGameCycle();
     }
 	
     public void startGameCycle() throws Exception {
     	if (!!!running)
     		running = true;
+		try {
+			targets.connect();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		targets.startGameCycle();
 		//sentry.startGun();
     }
@@ -112,12 +102,6 @@ public class Game implements Runnable{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		try {
-			targets.connect();
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		score.set(0);
 		System.out.println("Start game on new thread " + String.valueOf(running));
 		while (running){

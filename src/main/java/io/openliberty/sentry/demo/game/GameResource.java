@@ -3,6 +3,7 @@ package io.openliberty.sentry.demo.game;
 import java.io.IOException;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -27,6 +28,7 @@ import io.openliberty.sentry.demo.model.Game;
 public class GameResource {
 
 	static Game game;
+	
     @GET
     @Produces(MediaType.APPLICATION_JSON)
 	public JsonObject getGameStat() {
@@ -84,19 +86,13 @@ public class GameResource {
         // tag::method-contents[]
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
     	 String result = "no result";
-    	 game = new Game();
-    	 game.start();
      	 try {
+     		game = new Game();
+        	game.start();
 			game.startGameCycle();
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
-    	 try {
-			//result = String.valueOf(game.test());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
     	 builder.add("game", "newGame");
     	 builder.add("result", result);
@@ -127,7 +123,7 @@ public class GameResource {
             	System.out.println("Finished running on End points");
             	try {
 					game.stopGameCycle();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -153,9 +149,9 @@ public class GameResource {
         // tag::method-contents[]
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
     	 String result = "no result";
-    	 game = new Game();
-    	 game.start();
      	 try {
+     		game = new Game();
+        	game.start();
 			game.testGameCycle();
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -197,16 +193,9 @@ public class GameResource {
                     System.out.println("Sending data "+ "hit" + hitcount);
             	}
             	System.out.println("Finished running on End points");
+            	/*
             	try {
 					game.stopGameCycle();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-            	/*
-				try {
-					if (game != null)
-						game.stopGameCycle();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
