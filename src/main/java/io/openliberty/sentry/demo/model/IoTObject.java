@@ -43,11 +43,20 @@ public abstract class IoTObject implements IoTConnection{
 	public boolean ping() throws IOException {
 		if (tcpClient != null) {
 			String response = tcpClient.sendCommand("ping");
-			if (response != null && response.equals(TCPClient.TCP_OK)){
+			if (response != null && response.contains(TCPClient.TCP_OK)){
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	public boolean isConnected() {
+		try {
+			return ping();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			return false;
+		}
 	}
 	
 	public void sendCommand(TCPCommand c) {
@@ -64,8 +73,9 @@ public abstract class IoTObject implements IoTConnection{
 			rawtcp = "T_X";
 		try {
 			String response = tcpClient.sendCommand(rawtcp);
-			if (response.equals(TCPClient.TCP_ERROR)) {
-				throw new IOException("Message was sent and received an error");
+			while (response.contains(TCPClient.TCP_NC)) {
+				System.out.println("response is not ok, resending command " + response);
+				response = tcpClient.sendCommand(rawtcp);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
