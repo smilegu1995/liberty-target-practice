@@ -2,7 +2,11 @@ const timerDisplay = document.querySelector(".timer-display");
 var scoreVal = document.getElementById('scoreVal');
 const countDownTime = 1;
 let runningTimer;
-
+const spinAngle = 4;
+// var x = document.getElementById('x');
+// var y = document.getElementById('y');
+var x = 0;
+var y = 0;
 // Run on the page load
 $(startGame());
 
@@ -61,3 +65,35 @@ function runTimer() {
 function pageRedirect() {
   window.location.replace("results.html");
 }
+
+
+function moveUp() {
+  newAngle = y + spinAngle;
+  if (newAngle < 90){
+    y = newAngle;
+  } 
+  window.alert(y);
+}
+function moveDown() {
+  newAngle = y - spinAngle;
+  if (newAngle > -90){
+    y = newAngle;
+  } 
+  window.alert(y);
+  
+}
+function moveLeft() {
+  newAngle = x - spinAngle;
+  if (newAngle > -90){
+    x = newAngle;
+  } 
+  window.alert(x);
+}
+function moveRight() {
+  newAngle = x + spinAngle;
+  if (newAngle < 90){
+    x = newAngle;
+  } 
+  window.alert(x);
+}
+
