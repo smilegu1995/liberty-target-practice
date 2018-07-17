@@ -2,15 +2,17 @@ package io.openliberty.sentry.demo.model;
 
 import java.net.InetAddress;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Model;
+import javax.inject.Inject;
 
 import io.openliberty.sentry.demo.tcp.TCPCommand;
 
 @Model
 public class TargetArray extends IoTObject {
-
-	private static TargetArray instance; 
 	
+	private static TargetArray instance; 
+		
 	private TargetArray(){
 		super();
 	}
@@ -22,19 +24,26 @@ public class TargetArray extends IoTObject {
 	
 	public static TargetArray getInstance() {
 		//boolean pingSuccessful = false;
-		while (instance == null || !!!instance.isConnected()) {
+		int retry = 5;
+		while ((instance == null || !!!instance.isConnected()) && retry > 0) {
 			try {
 				instance = new TargetArray();
-				instance.setHost(InetAddress.getByName("192.168.0.103"), 5045);
+				
+				String ip = System.getProperty("targets.ip");
+				int port = Integer.valueOf(System.getProperty("targets.port"));
+				
+				instance.setHost(InetAddress.getByName(ip), port);
 				instance.connect();
+				retry--;
 				//pingSuccessful = instance.ping();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				retry--;
 			}
 		}
 
-		return instance;
+		return instance.isConnected() ? instance : null;
 	}
 	
 	public void activateAllTargets(){
