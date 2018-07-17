@@ -3,8 +3,6 @@ var scoreVal = document.getElementById('scoreVal');
 const countDownTime = 1;
 let runningTimer;
 const spinAngle = 4;
-// var x = document.getElementById('x');
-// var y = document.getElementById('y');
 var x = 0;
 var y = 0;
 // Run on the page load
@@ -95,5 +93,8 @@ function moveRight() {
     x = newAngle;
   } 
   window.alert(x);
+}
+function fire() {
+  window.alert("Fire in the hole");
 }
 
