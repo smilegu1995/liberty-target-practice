@@ -81,6 +81,14 @@
             <version>1</version>
             <scope>provided</scope>
         </dependency>
+        <!-- tag::config[] -->
+        <dependency>
+          <groupId>org.eclipse.microprofile.config</groupId>
+          <artifactId>microprofile-config-api</artifactId>
+          <version>1.2</version>
+          <scope>provided</scope>
+        </dependency>
+        <!-- end::config[] -->
         <!-- tag::dependencies_test[] -->
         <dependency>
             <groupId>commons-httpclient</groupId>
@@ -127,6 +135,7 @@
 	                <serverName>${project.artifactId}Server</serverName>
 	                <stripVersion>true</stripVersion>
 	                <configFile>src/main/liberty/config/server.xml</configFile>
+	                <jvmOptionsFile>src/main/liberty/config/resources/jvm.options</jvmOptionsFile>
 	                <packageFile>${package.file}</packageFile>
 	                <include>${packaging.type}</include>
 	                <bootstrapProperties>
