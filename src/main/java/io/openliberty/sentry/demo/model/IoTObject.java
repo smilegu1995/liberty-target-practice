@@ -29,6 +29,14 @@ public abstract class IoTObject implements IoTConnection{
 		port = serverPort;
 	}
 	
+	public String getIP() {
+		return host == null? null : host.getHostAddress();
+	}
+	
+	public int getPort() {
+		return port;
+	}
+	
 	public void connect() throws Exception{
 		if (tcpClient == null)
 			tcpClient = new TCPClient(host, port);

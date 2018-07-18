@@ -1,6 +1,6 @@
 .futurepanel {
   box-sizing: border-box;
-  display: inline-block;
+  /*display: inline-block;*/
   font: normal 100 14px/1.2em "Exo 2", Arial, sans-serif;
   letter-spacing: .06em;
   background-color: rgba(75, 0, 130, 0.1);
@@ -118,6 +118,7 @@
   border: 1px solid rgba(120, 200, 255, 0.2);
   background-color: rgba(120, 200, 255, 0.6);
   cursor: pointer;
+  min-width: 100px
 }
 .futurebutton:hover {
   background-color: rgba(120, 200, 255, 0.4);

@@ -24,7 +24,7 @@ public class TargetArray extends IoTObject {
 	
 	public static TargetArray getInstance() {
 		//boolean pingSuccessful = false;
-		int retry = 5;
+		int retry = 2;
 		while ((instance == null || !!!instance.isConnected()) && retry > 0) {
 			try {
 				instance = new TargetArray();
