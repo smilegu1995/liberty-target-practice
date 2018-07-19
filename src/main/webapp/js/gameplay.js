@@ -2,7 +2,14 @@ const timerDisplay = document.querySelector(".timer-display");
 var scoreVal = document.getElementById('scoreVal');
 const countDownTime = 1;
 let runningTimer;
-
+var sliderH = document.getElementById('SliderH');
+sliderH.oninput = function() {
+  console.log(this.value);
+}
+var sliderV = document.getElementById('SliderV');
+sliderV.oninput = function() {
+  console.log(this.value);
+}
 // Run on the page load
 $(startGame());
 
@@ -61,3 +68,8 @@ function runTimer() {
 function pageRedirect() {
   window.location.replace("results.html");
 }
+
+function fire() {
+  console.log("Fire");
+}
+
