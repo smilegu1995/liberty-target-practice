@@ -9,30 +9,21 @@ enum FireMode {
 	NERF
 }
 
-public class SentryTurret extends IoTObject {
+public class Ship extends IoTObject {
 
-	public SentryTurret(){
+	public Ship(){
 		super();
 	}
 	
-	public SentryTurret(InetAddress serverAddress, int serverPort) {
+	public Ship(InetAddress serverAddress, int serverPort) {
 		super(serverAddress, serverPort);
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void startGun() throws Exception {
-		sendCommand(TCPCommand.GUNSTART);
+	public void startShip() throws Exception {
 	}
 	
 	public void fireLaser(){
-		
-	}
-	
-	public void fireNerf(){
-		
-	}
-	
-	public void fire(FireMode mode){
 		
 	}
 	

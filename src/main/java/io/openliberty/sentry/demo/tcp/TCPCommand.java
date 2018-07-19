@@ -1,9 +1,18 @@
 package io.openliberty.sentry.demo.tcp;
 
 public enum TCPCommand {
-	GAMESTART,
-	GAMESTOP,
+	T_GAMESTART,
+	T_GAMESTOP,
 	PING,
-	GUNSTART,
-	TXTEST
+	T_TXTEST,
+	T_TARGET1,
+	T_TARGET2,
+	T_TARGET3,
+	T_TARGET4,
+	T_TARGET5,
+	T_ALLUP,
+	T_ALLDOWN,
+	T_CYCLETARGETS,
+	T_UPDATELASER,
+	T_UPDATEPIEZO
 }

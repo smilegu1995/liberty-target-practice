@@ -11,7 +11,7 @@ import javax.enterprise.context.ApplicationScoped;
 public class Game implements Runnable{
 	
 	private TargetArray targets;
-	private SentryTurret sentry;
+	private Ship sentry;
 	
 	private boolean running = false;
 	

@@ -2,9 +2,7 @@ package io.openliberty.sentry.demo.model;
 
 import java.net.InetAddress;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Model;
-import javax.inject.Inject;
 
 import io.openliberty.sentry.demo.tcp.TCPCommand;
 
@@ -24,7 +22,7 @@ public class TargetArray extends IoTObject {
 	
 	public static TargetArray getInstance() {
 		//boolean pingSuccessful = false;
-		int retry = 5;
+		int retry = 2;
 		while ((instance == null || !!!instance.isConnected()) && retry > 0) {
 			try {
 				instance = new TargetArray();
@@ -61,23 +59,18 @@ public class TargetArray extends IoTObject {
 	public void setTargetState(){
 		
 	}
-		
+	
 	public void startGameCycle() throws Exception {
-		int count = 2;
-		while (count != 0) {
-			sendCommand(TCPCommand.GAMESTART);
-			count--;
-		}
-		
+		sendCommand(TCPCommand.T_GAMESTART);
 	}
 	
 	public void stopGameCycle() throws Exception {
-		sendCommand(TCPCommand.GAMESTOP);
+		sendCommand(TCPCommand.T_GAMESTOP);
 		disconnect();
 	}
 	
 	public void testGameCycle() throws Exception {
-		sendCommand(TCPCommand.TXTEST);
+		sendCommand(TCPCommand.T_TXTEST);
 	}
 
 }
