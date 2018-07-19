@@ -131,7 +131,7 @@
 	            <artifactId>liberty-maven-plugin</artifactId>
 	            <version>2.3</version>
 	            <configuration>
-					<installDirectory>/Users/frankji/Documents/wlp_18002</installDirectory>
+					<installDirectory>C:\Users\fwji\Development\wlp_18002</installDirectory>
 	                <serverName>${project.artifactId}Server</serverName>
 	                <stripVersion>true</stripVersion>
 	                <configFile>src/main/liberty/config/server.xml</configFile>

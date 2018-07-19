@@ -29,16 +29,16 @@
 	    <div class="futurepanel__body">
 	  		<div>
 	  		  <h4 class="heading">Targets Array</h4>
-	  		  <button class="futurebutton">Disconnect</button>
-	  		  <p>Status: Connected.</p>
-		      <p>IP: 192.168.0.103</p>
+	  		  <button class="futurebutton" id="target_button" disabled>Connect</button>
+	  		  <div> Status: <span id="target_status">Connecting...</span> </div>
+		      <div> IP: <span id="target_ip">Unknown</span> </div>
 		      <div class="futurepanel__divider"></div>
 	  		</div>
 	  		<div>
 		      <div class="futuregrid">
 		        <div class="futuregrid__row">
 		          <h4 class="futuregrid__cell">T1</h4>
-		          <button class="futurebutton">Toggle</button>
+		          <button class="futurebutton" id="target_button1">Toggle</button>
 		        </div>
 		        <div class="futuregrid__row">
 		          <h4 class="futuregrid__cell">T2</h4>
@@ -105,9 +105,9 @@
 	    <div class="futurepanel__body">
 	    	<div>
 	  		  <h4 class="heading">Spaceship</h4>
-	  		  <button class="futurebutton">Disconnect</button>
-	  		  <p>Status: Connected.</p>
-		      <p>IP: 192.168.0.104</p>
+	  		  <button class="futurebutton" disabled>Connect</button>
+	  		  <div> Status: <span id="ship_status">Connecting...</span> </div>
+		      <div> IP: <span id="ship_ip">Unknown</span> </div>
 		      <div class="futurepanel__divider"></div>
 	  		</div>	
 	    	<div>

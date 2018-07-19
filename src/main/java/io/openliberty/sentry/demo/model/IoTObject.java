@@ -7,6 +7,7 @@ import javax.enterprise.inject.Model;
 
 import io.openliberty.sentry.demo.tcp.TCPClient;
 import io.openliberty.sentry.demo.tcp.TCPCommand;
+import io.openliberty.sentry.demo.tcp.TCPUtils;
 
 @Model
 public abstract class IoTObject implements IoTConnection{
@@ -68,17 +69,7 @@ public abstract class IoTObject implements IoTConnection{
 	}
 	
 	public void sendCommand(TCPCommand c) {
-		String rawtcp = null;
-		if (c == TCPCommand.GAMESTART)
-			rawtcp = "GSTR";
-		else if (c == TCPCommand.PING)
-			rawtcp = "ping";
-		else if (c == TCPCommand.GAMESTOP)
-			rawtcp = "GG";
-		else if (c == TCPCommand.GUNSTART)
-			rawtcp = "START";
-		else if (c == TCPCommand.TXTEST)
-			rawtcp = "T_X";
+		String rawtcp = TCPUtils.convertTCPCommandToString(c);
 		try {
 			String response = tcpClient.sendCommand(rawtcp);
 			while (response.contains(TCPClient.TCP_NC)) {
