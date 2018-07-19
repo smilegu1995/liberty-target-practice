@@ -85,16 +85,20 @@ public class GameResource {
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
     	 String result = "no result";
      	 try {
+     		game = null;
      		game = new Game();
         	game.start();
 			game.startGameCycle();
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+				e1.printStackTrace();
+	    	 builder.add("result", "failed");
+	    	 builder.add("reason", e1.getMessage());
+	    	 return builder.build();
+			
 		}
-    	 builder.add("game", "newGame");
-    	 builder.add("result", result);
-    	 return builder.build();
+    	builder.add("result", result);
+    	return builder.build();
     }
     
     @GET
@@ -125,7 +129,6 @@ public class GameResource {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-            	game = null;
             	System.out.println("game cleaned up successfully");
             	/*
 				try {

@@ -21,28 +21,35 @@ public class AdminResource {
 
 	
     @GET
-    @Path("devices")
+    @Path("devices/{device}")
     @Produces(MediaType.APPLICATION_JSON)
-	public JsonObject getDevicesStat() {
+	public JsonObject getDevicesStat(@PathParam("device")String device) {
     	
         // tag::method-contents[]
-    	
+    	JsonObjectBuilder builder = Json.createObjectBuilder();
     	//return target and ship ip and port and connection status
-    	String targets_ip = "n/a";
-    	int targets_port = -1;
-    	boolean targets_connected = false;
-    	TargetArray targets = TargetArray.getInstance();
-    	if (targets != null) {
-        	targets_ip = targets.getIP();
-        	targets_port = targets.getPort();
-        	targets_connected = targets.isConnected();
+    	if (device.equals("targets")) {
+        	String targets_ip = "n/a";
+        	int targets_port = -1;
+        	boolean targets_connected = false;
+        	TargetArray targets = TargetArray.getInstance();
+        	if (targets != null) {
+            	targets_ip = targets.getIP();
+            	targets_port = targets.getPort();
+            	targets_connected = targets.isConnected();
+        	}
+        	
+        	builder.add("result", "success");
+        	builder.add("targets_ip", targets_ip);
+        	builder.add("targets_port", String.valueOf(targets_port));
+        	builder.add("targets_connected", String.valueOf(targets_connected));
+    		return builder.build();
+    	}
+    	
+    	if (device.equals("ship")) {
+    		
     	}
 
-
-    	JsonObjectBuilder builder = Json.createObjectBuilder();
-    	builder.add("targets_ip", targets_ip);
-    	builder.add("targets_port", String.valueOf(targets_port));
-    	builder.add("targets_connected", String.valueOf(targets_connected));
 		return builder.build();
 	}
     
@@ -59,7 +66,7 @@ public class AdminResource {
         	return builder.build();   
     	}
     	
-    	if (!!!device.equals("targets") && !!!device.equals("ships")) {
+    	if (!!!device.equals("targets") && !!!device.equals("ship")) {
         	builder.add("result", "failed");
         	builder.add("reason", "device unknown");
         	return builder.build();   
