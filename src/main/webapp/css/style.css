@@ -135,6 +135,7 @@ html, body {
 }
 
 .interface {
+  height: 50%;
   width: 60%;
 }
 
@@ -163,7 +164,13 @@ html, body {
 }
 
 #scoreBoard {
-	margin-top: 40px;
+  float: left;
+	margin-top: 0px;
+}
+
+#timerBoard {
+  float: left;
+  margin-top: 0px;
 }
 
 .score {
@@ -370,7 +377,7 @@ small{
 }
 
 #Fire {
-    margin-top: 40px;
+    margin-top: 0px;
     background-color: #00BFFF;
     width: 60%;
 }
