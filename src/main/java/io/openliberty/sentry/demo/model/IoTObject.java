@@ -84,6 +84,25 @@ public abstract class IoTObject implements IoTConnection{
 		
 	}
 	
+	public void sendCommand(TCPCommand c, String args) {
+		String rawtcp = TCPUtils.convertTCPCommandToString(c);
+		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append(rawtcp).append(args);
+			String responseWithArgs = sb.toString();
+			String response = tcpClient.sendCommand(responseWithArgs);
+			while (response.contains(TCPClient.TCP_NC)) {
+				System.out.println("response is not ok, resending command " + responseWithArgs);
+				response = tcpClient.sendCommand(responseWithArgs);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Unable to send message to tcpClient due to an error " + e.getMessage());
+		}
+		
+	}
+	
 	public String getData() throws IOException{
 		int count = 0;
 		String rxData = null;
