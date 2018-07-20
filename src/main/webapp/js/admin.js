@@ -35,22 +35,46 @@ var target_button = document.getElementById('target_button');
 
 //Run on the page load
 $(getDevicesStatus());
-$(".target_button1").click(function() {
+
+$("#target_button1").click(function() {
   sendDeviceCommandReq("targets", "target1");
 });
+$("#target_button2").click(function() {
+  sendDeviceCommandReq("targets", "target2");
+});
+$("#target_button3").click(function() {
+  sendDeviceCommandReq("targets", "target3");
+});
+$("#target_button4").click(function() {
+  sendDeviceCommandReq("targets", "target4");
+});
+$("#target_button5").click(function() {
+  sendDeviceCommandReq("targets", "target5");
+});
+
+$("#allup_button").click(function() {
+  sendDeviceCommandReq("targets", "allup");
+});
+$("#alldown_button").click(function() {
+  sendDeviceCommandReq("targets", "alldown");
+});
+$("#cycle_button").click(function() {
+  sendDeviceCommandReq("targets", "cycle");
+});
+
 
 function sendDeviceCommandReq(device, cmd){
     $.ajax({
       type: "POST",
       url: "/SentryTargetChallenge/adminapp/admin/txcmd/"+ device +"/" + cmd,
-      data: user,
       success: success,
-      dataType: "text"
+      error: fail,
+      dataType: "json"
     });
 }
 
 function getDevicesStatus() {
-  $.get("/SentryTargetChallenge/adminapp/admin/devices", function(data) {
+  $.get("/SentryTargetChallenge/adminapp/admin/devices/targets", function(data) {
     showDevicesStatus(data);
   });
 }
@@ -69,4 +93,8 @@ function showDevicesStatus(data) {
 
 function success() {
   console.log("success!");
+}
+
+function fail() {
+  alert("Device not connected!");
 }
