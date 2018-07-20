@@ -29,7 +29,7 @@ public class Game implements Runnable{
 		}
 		spaceShip = Ship.getInstance();
 		if (spaceShip == null) {
-			throw new Exception("The Space ship is not connected. Game cannot be started");
+			System.out.println("The Space ship is not connected. Game cannot be started");
 		}
 	}
 	
@@ -62,13 +62,15 @@ public class Game implements Runnable{
     		running = true;
 		try {
 			targets.connect();
-			spaceShip.connect();
+			if (spaceShip != null)
+				spaceShip.connect();
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		targets.startGameCycle();
-		spaceShip.startShip();
+		if (spaceShip != null)
+			spaceShip.startShip();
     }
     
     public void testGameCycle() throws Exception {
@@ -91,7 +93,8 @@ public class Game implements Runnable{
             this.notifyAll();
         }
     	targets.stopGameCycle();
-    	spaceShip.stopShip();
+    	if (spaceShip != null)
+    		spaceShip.stopShip();
     }
 	
 	public synchronized void waitForHitUpdate(){
