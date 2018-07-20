@@ -100,7 +100,7 @@ public class AdminResource {
     		}
     	}
     	
-    	if (device.equals("ships")) {
+    	if (device.equals("ship")) {
     		TCPCommand tcmd = TCPUtils.convertRequestCmdStringToTCPCommand(device, cmd);
     		if (tcmd != null) {
     			Ship spaceShip = Ship.getInstance();
