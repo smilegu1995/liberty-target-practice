@@ -1,0 +1,16 @@
+1.  git clone git@github.com:fwji/liberty-target-practice.git
+2.  cd liberty-target-practice
+3.  git checkout master
+4.  git pull
+5.  git checkout -b <branchname>
+6.  git push --set-upstream origin <branchname>
+7.  git add <the file you changed goes here>   (don't add pom.xml)
+8.  git commit
+9.  git fetch origin
+10. git rebase origin/master
+11. git push -f 
+12. Create a pull request again master and your branch
+13. Submit a code review and wait for us to review your code
+
+
+

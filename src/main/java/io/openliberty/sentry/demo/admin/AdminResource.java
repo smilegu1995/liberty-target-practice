@@ -72,7 +72,7 @@ public class AdminResource {
 	}
     
     @POST
-    @Path("txcmd/{device}/{cmd}/{value}")
+    @Path("txcmd/{device}/{cmd}{param1 : (/value)?}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response postEspCmd(@PathParam("device")String device, @PathParam("cmd")String cmd, @PathParam("value")String value) {
         // tag::method-contents[]
