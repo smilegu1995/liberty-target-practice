@@ -11,6 +11,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import io.openliberty.sentry.demo.model.Ship;
 import io.openliberty.sentry.demo.model.TargetArray;
 import io.openliberty.sentry.demo.tcp.TCPCommand;
 import io.openliberty.sentry.demo.tcp.TCPUtils;
@@ -47,6 +48,21 @@ public class AdminResource {
     	}
     	
     	if (device.equals("ship")) {
+    		String ship_ip = "n/a";
+        	int ship_port = -1;
+        	boolean ship_connected = false;
+        	Ship spaceShip = Ship.getInstance();
+        	if (spaceShip != null) {
+            	ship_ip = spaceShip.getIP();
+            	ship_port = spaceShip.getPort();
+            	ship_connected = spaceShip.isConnected();
+        	}
+        	
+        	builder.add("result", "success");
+        	builder.add("ship_ip", ship_ip);
+        	builder.add("ship_port", String.valueOf(ship_port));
+        	builder.add("ship_connected", String.valueOf(ship_connected));
+    		return builder.build();
     		
     	}
 
@@ -83,10 +99,18 @@ public class AdminResource {
             	return builder.build();
     		}
     	}
-    	/*
-    	if (device.equals("ships") && !!!targets.isCmdValid(cmd)) {
-    		
-    	}*/
+    	
+    	if (device.equals("ship")) {
+    		TCPCommand tcmd = TCPUtils.convertRequestCmdStringToTCPCommand(device, cmd);
+    		if (tcmd != null) {
+    			Ship spaceShip = Ship.getInstance();
+    			spaceShip.sendCommand(tcmd);
+    		} else {
+    			builder.add("result", "failed");
+            	builder.add("reason", "targets command unknown");
+            	return builder.build();
+    		}
+    	}
     	
     	 
     	builder.add("result", "success");

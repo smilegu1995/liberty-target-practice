@@ -11,7 +11,7 @@ import javax.enterprise.context.ApplicationScoped;
 public class Game implements Runnable{
 	
 	private TargetArray targets;
-	private Ship sentry;
+	private Ship spaceShip;
 	
 	private boolean running = false;
 	
@@ -26,6 +26,10 @@ public class Game implements Runnable{
 		targets = TargetArray.getInstance();
 		if (targets == null) {
 			throw new Exception("Targets array is not connected. Game cannot be started");
+		}
+		spaceShip = Ship.getInstance();
+		if (spaceShip == null) {
+			System.out.println("The Space ship is not connected. Game cannot be started");
 		}
 	}
 	
@@ -58,12 +62,15 @@ public class Game implements Runnable{
     		running = true;
 		try {
 			targets.connect();
+			if (spaceShip != null)
+				spaceShip.connect();
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		targets.startGameCycle();
-		//sentry.startGun();
+		if (spaceShip != null)
+			spaceShip.startShip();
     }
     
     public void testGameCycle() throws Exception {
@@ -86,7 +93,8 @@ public class Game implements Runnable{
             this.notifyAll();
         }
     	targets.stopGameCycle();
-    	
+    	if (spaceShip != null)
+    		spaceShip.stopShip();
     }
 	
 	public synchronized void waitForHitUpdate(){

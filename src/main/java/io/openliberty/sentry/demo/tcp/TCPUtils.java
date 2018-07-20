@@ -25,6 +25,12 @@ public class TCPUtils {
 	            	return TCPCommand.T_TARGET4;
 	            case "target5":
 	            	return TCPCommand.T_TARGET5;
+	            case "fireLaser":
+	            	return TCPCommand.S_FIRELASER;
+	            case "panShip":
+	            	return TCPCommand.S_PANSHIP;
+	            case "tiltShip":
+	            	return TCPCommand.S_TILTSHIP;
 	            default:
 	                System.out.println("invalid request cmd, not TCPCommand is matched.");
 	        }
@@ -59,6 +65,12 @@ public class TCPUtils {
 				return "T_C";
 			case T_UPDATELASER:
 			case T_UPDATEPIEZO:
+			case S_FIRELASER:
+				return "FIRE";
+			case S_PANSHIP:
+				return "SRH=";
+			case S_TILTSHIP:
+				return "SRV=";
 			default:
 				System.out.println("Should not reach here");
 		}
