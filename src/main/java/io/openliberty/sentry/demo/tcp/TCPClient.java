@@ -26,6 +26,7 @@ public class TCPClient {
     	host = serverAddress;
     	port = serverPort;
         this.socket = new Socket();
+        this.socket.setTcpNoDelay(true);
         this.socket.connect(new InetSocketAddress(host, port), 5000);
         out = new PrintWriter(this.socket.getOutputStream(), true);
         in = new BufferedReader(
