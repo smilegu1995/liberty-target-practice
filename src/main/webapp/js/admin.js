@@ -73,6 +73,7 @@ $("#ship_firebutton").click(function() {
 });
 
 
+
 function sendDeviceCommandReq(device, cmd){
     $.ajax({
       type: "POST",
