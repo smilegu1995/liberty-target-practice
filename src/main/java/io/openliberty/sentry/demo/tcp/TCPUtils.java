@@ -34,6 +34,17 @@ public class TCPUtils {
 	            default:
 	                System.out.println("invalid request cmd, not TCPCommand is matched.");
 	        }
+		} else if (device.equals(SHIP)) {
+			switch(cmd) {
+	            case "fireLaser":
+	            	return TCPCommand.S_FIRELASER;
+	            case "panShip":
+	            	return TCPCommand.S_PANSHIP;
+	            case "tiltShip":
+	            	return TCPCommand.S_TILTSHIP;
+	            default:
+	                System.out.println("invalid request cmd, not TCPCommand is matched.");
+			}
 		}
 
 		return null;

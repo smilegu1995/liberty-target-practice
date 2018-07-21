@@ -9,7 +9,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import io.openliberty.sentry.demo.model.Ship;
 import io.openliberty.sentry.demo.model.TargetArray;
@@ -19,8 +21,8 @@ import io.openliberty.sentry.demo.tcp.TCPUtils;
 @ApplicationScoped
 @Path("admin")
 public class AdminResource {
-
-	
+	static TargetArray targets = null;
+	static Ship spaceShip = null;
     @GET
     @Path("devices/{device}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -33,7 +35,7 @@ public class AdminResource {
         	String targets_ip = "n/a";
         	int targets_port = -1;
         	boolean targets_connected = false;
-        	TargetArray targets = TargetArray.getInstance();
+        	//TargetArray targets = TargetArray.getInstance();
         	if (targets != null) {
             	targets_ip = targets.getIP();
             	targets_port = targets.getPort();
@@ -51,7 +53,7 @@ public class AdminResource {
     		String ship_ip = "n/a";
         	int ship_port = -1;
         	boolean ship_connected = false;
-        	Ship spaceShip = Ship.getInstance();
+        	//Ship spaceShip = Ship.getInstance();
         	if (spaceShip != null) {
             	ship_ip = spaceShip.getIP();
             	ship_port = spaceShip.getPort();
@@ -70,53 +72,61 @@ public class AdminResource {
 	}
     
     @POST
-    @Path("txcmd/{device}/{cmd}")
+    @Path("txcmd/{device}/{cmd}{value : (/[0-9]+)?}")
     @Produces(MediaType.APPLICATION_JSON)
-    public JsonObject postEspCmd(@PathParam("device")String device, @PathParam("cmd")String cmd) {
+    public Response postEspCmd(@PathParam("device")String device, @PathParam("cmd")String cmd, @PathParam("value")String value) {
         // tag::method-contents[]
     	JsonObjectBuilder builder = Json.createObjectBuilder();
+    	System.out.println(value);
     	//corner cases
     	if (device == null || device.isEmpty()) {
-        	builder.add("result", "failed");
-        	builder.add("reason", "device not specified");
-        	return builder.build();   
+    		return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("ERROR: Device is not specified")
+                        .build();
     	}
     	
     	if (!!!device.equals("targets") && !!!device.equals("ship")) {
-        	builder.add("result", "failed");
-        	builder.add("reason", "device unknown");
-        	return builder.build();   
+    		return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("ERROR: Device unknown")
+                        .build();  
     	}
     	
     	if (device.equals("targets")) {
     		TCPCommand tcmd = TCPUtils.convertRequestCmdStringToTCPCommand(device, cmd);
     		if (tcmd != null) {
     			TargetArray targets = TargetArray.getInstance();
-    			targets.sendCommand(tcmd);
+    			if (targets != null)
+    				targets.sendCommand(tcmd);
+    			else
+    				return Response.status(Response.Status.SERVICE_UNAVAILABLE)
+    	                     .entity("ERROR: Device is not connected")
+    	                         .build();
     		} else {
-    			builder.add("result", "failed");
-            	builder.add("reason", "targets command unknown");
-            	return builder.build();
+    			return Response.status(Response.Status.SERVICE_UNAVAILABLE)
+	                     .entity("ERROR: unknown command")
+	                         .build();
     		}
     	}
     	
     	if (device.equals("ship")) {
     		TCPCommand tcmd = TCPUtils.convertRequestCmdStringToTCPCommand(device, cmd);
     		if (tcmd != null) {
-    			Ship spaceShip = Ship.getInstance();
-    			spaceShip.sendCommand(tcmd);
+    			//Ship spaceShip = Ship.getInstance();
+    			if (spaceShip != null) {
+    				if (value == null || value.equalsIgnoreCase("undefined"))
+    					spaceShip.sendCommand(tcmd);
+    				else
+    					spaceShip.sendCommand(tcmd, value);
+    			}
+    			
     		} else {
-    			builder.add("result", "failed");
-            	builder.add("reason", "targets command unknown");
-            	return builder.build();
+    			return Response.status(Response.Status.SERVICE_UNAVAILABLE)
+	                     .entity("ERROR: unknown command")
+	                         .build();
     		}
     	}
     	
-    	 
-    	builder.add("result", "success");
-    	builder.add("cmd", cmd);
-    	builder.add("device", device);
-    	 
-		return builder.build();    	
+    	builder.add("result", "success"); 
+    	return Response.ok(builder.build()).build(); 	
     }
 }

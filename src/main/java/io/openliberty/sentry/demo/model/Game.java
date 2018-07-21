@@ -27,10 +27,6 @@ public class Game implements Runnable{
 		if (targets == null) {
 			throw new Exception("Targets array is not connected. Game cannot be started");
 		}
-		spaceShip = Ship.getInstance();
-		if (spaceShip == null) {
-			System.out.println("The Space ship is not connected. Game cannot be started");
-		}
 	}
 	
 	/*
