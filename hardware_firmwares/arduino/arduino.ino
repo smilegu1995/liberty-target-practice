@@ -41,15 +41,15 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 //#define SERVOMAX  375 // this is the 'maximum' pulse length count (out of 4096)
 #define SERVOMIN  375 // this is the 'minimum' pulse length count (out of 4096)
 #define SERVOMAX  160  // this is the 'maximum' pulse length count (out of 4096)
-#define LIT_LIMIT 230  // laser usually hits 40-50. Ambient room lighting around 6-7
+#define LIT_LIMIT 240  // laser usually hits 40-50. Ambient room lighting around 6-7
 #define LIT_LIMIT0 200  // laser usually hits 40-50. Ambient room lighting around 6-7
 
 const int knockSensor = A1; // where we connect z
 const int threshold = 150;  // thresle used to store the last LED status, to toggle the light
 const int threshold0 = 30;  // thresle used to store the last LED status, to toggle the light
 const int selectKnockPins[3] = {2, 3, 4}; // S0~2, S1~3, S2~4
-const int servMin[5] = {400, 425, 330, 330, 395};
-const int servMax[5] = {160, 180, 160, 190, 180};
+const int servMin[5] = {380, 425, 400, 390, 395};
+const int servMax[5] = {180, 190, 200, 170, 160};
 
 // these variables will change:
 int touchValue = 0;      // variable to store the value read from the sensor pin
@@ -69,6 +69,9 @@ uint8_t servonum = 0;
 int count = 0;
 
 bool visitedTarget[5] = {true, false, false, false, false};
+
+//true means stand position
+bool targetStatus[5] = {true, false, false, false, false};
 bool game = false;
 
 String AP = "ol_demo_wifi";       // CHANGE ME
@@ -85,24 +88,8 @@ bool DEBUG = true;   //show more logs
 
 void setup() {
   Serial.begin(9600);
-  //esp8266.begin(115200);
-  //sendCommand("AT+UART_DEF=9600,8,1,0,0",5,"OK");
-  //delay(1000);
-  //esp8266.end();
-  // Start the software serial for communication with the ESP8266
   esp8266.begin(9600);
-  //sendCommand("AT",5,"OK");
-  //esp8266.println(command);
-  //esp8266.println("AT");
 
-  /*
-  sendCommand("AT",5,"OK");
-  sendCommand("AT+CWMODE=1",5,"OK");
-  sendCommand("AT+CWJAP=\""+ AP +"\",\""+ PASS +"\"",20,"OK");
-  sendToWifi("AT+CIFSR", 10, true);
-  sendToWifi("AT+CIPMUX=1",10,DEBUG); // configure for multiple connections
-  sendToWifi("AT+CIPSERVER=1,80",10,DEBUG); // turn on server on port 80
-  sendToUno("Wifi connection is running!",10,DEBUG);*/
   
   randomSeed(analogRead(3));
   pwm.begin();
@@ -120,6 +107,7 @@ void setup() {
   pinMode(selectKnockPins[1], OUTPUT);
   pinMode(selectKnockPins[2], OUTPUT);
   delay(1000);
+  Serial.println("Arduino setup completed!");
 }
 
 // you can use this function if you'd like to set the pulse length in seconds
@@ -140,46 +128,83 @@ void setServoPulse(uint8_t n, double pulse) {
 
 void loop() {  
   if(esp8266.available()>0){
-    String message = readWifiSerialMessage();
+    String message = esp8266.readStringUntil('\n');
     Serial.println("received message from TCP Client: "+ message);
-    if(find(message,"ping")){  //receives ping from wifi
-        esp8266.print("ok");   
-    } else if (find(message, "AU")){
-      sendToWifi("ok", 10, false);
-      allTargetsUp();
-    } else if (find(message, "AD")){
-      sendToWifi("ok", 10, false);
-      allTargetsDown();
-    } else if (find(message, "GSTR")){
-      sendToWifi("ok", 10, false);
-      gameCycleStart();
-    } else if (find(message, "T_C")){
-      sendToWifi("ok", 10, false);
-      cycleTargets();
-    } else if (find(message, "GG")){
-       sendToWifi("ok", 10, false);
-    } else if (find(message, "T_X")){
-       sendToWifi("ok", 10, false);
-       dataStreamTxTest();
-    } else{
-      sendToWifi("NC", 10, false);
-      Serial.println("\n"+ message + " is not a valid input");
+    if (message.length() > 2){
+      Serial.println("received message from TCP Client: "+ message);
+      if(find(message,"ping")){  //receives ping from wifi
+          esp8266.println("ok");   
+      } else if (find(message, "T_AU")){
+        esp8266.println("ok");  
+        allTargetsUp();
+      } else if (find(message, "T_AD")){
+        esp8266.println("ok");  
+        allTargetsDown();
+      } else if (find(message, "GSTR")){
+        esp8266.println("ok");  
+        gameCycleStart();
+      } else if (find(message, "T_C")){
+        esp8266.println("ok");  
+        cycleTargets();
+      } else if (find(message, "GG")){
+         esp8266.println("ok");  
+      } else if (find(message, "T_X")){
+         esp8266.println("ok");  
+         dataStreamTxTest();
+      } else if (find(message, "T_T")) {
+         esp8266.println("ok");  
+         toggleTarget(message);
+      } else{
+        esp8266.println("NC");  
+        Serial.println("\n"+ message + " is not a valid input");
+      }
     }
+
   }
   delay(100);
+}
+
+void toggleTarget(String arg){
+  if (arg.equals("T_T1")){
+      toggleTarget(0);
+  } else if (arg.equals("T_T2")){
+      toggleTarget(1);
+  } else if (arg.equals("T_T3")){
+      toggleTarget(2);
+  } else if (arg.equals("T_T4")){
+      toggleTarget(3);
+  } else if (arg.equals("T_T5")) {
+      toggleTarget(4);
+  } else{
+      toggleTarget(0);
+  }
+}
+
+void toggleTarget(int servNum){
+  if (targetStatus[servNum] == false){
+    pwm.setPWM(servNum, 0, servMin[servNum]);
+    targetStatus[servNum] = true;
+  } else {
+    pwm.setPWM(servNum, 0, servMax[servNum]);
+    targetStatus[servNum] = false;
+  }
 }
 
 void allTargetsDown() {
   for (int i = 0; i < 5; i++){
     visitedTarget[i] = false;
-    pwm.setPWM(i, 0, servMax[servonum]);
+    targetStatus[i] = false;
+    pwm.setPWM(i, 0, servMax[i]);
+    delay(200);
   }
 }
 
 void allTargetsUp(){
     for (int i = 0; i < 5; i++){
       visitedTarget[i] = false;
-      pwm.setPWM(i, 0, servMin[servonum]);
+      targetStatus[i] = true;
+      pwm.setPWM(i, 0, servMin[i]);
+      delay(600);
     }
 }
 
@@ -193,8 +218,10 @@ void cycleTargets(){
     count++;
     pwm.setPWM(servonum, 0, servMin[servonum]);
     visitedTarget[servonum] = true;
+    targetStatus[servonum] = true;
     delay(500);   
     pwm.setPWM(servonum, 0, servMax[servonum]); 
+    targetStatus[servonum] = false;
   }
   if (count == 5) {
     for (int i = 0; i < 5; i++) {
@@ -250,10 +277,11 @@ void gameCycleStart(){
       //Serial.println(touchValue);
       if (litValue > LIT_LIMIT || touchValue > threshold) {      
           pwm.setPWM(servonum, 0, servMax[servonum]);
-          sendToWifi("validhit", 10, false);
+          targetStatus[servonum] = false;
+          esp8266.println("validhit");
           if (count == 0){
             delay(500);
-            sendToWifi("\nvalidhit", 10, false);
+            //sendToWifi("\nvalidhit", 10, false);
           }
           count++;
           if (millis() - startTime > 62000){
@@ -282,6 +310,7 @@ void gameCycleStart(){
             break;
           }
           pwm.setPWM(servonum, 0, servMin[servonum]);
+          targetStatus[servonum] = true;
           if (servochanged){
             servochanged = false;
             delay(2000);
@@ -318,40 +347,6 @@ void selectMuxKnockPin(byte pin)
       digitalWrite(selectKnockPins[i], LOW);
   }
 }
-
-void sendCommand(String command, int maxTime, char readReplay[]) {
-  Serial.print(countTrueCommand);
-  Serial.print(". at command => ");
-  Serial.print(command);
-  Serial.print(" ");
-  while(countTimeCommand < (maxTime*1))
-  {
-    esp8266.println(command);//at+cipsend
-    if(esp8266.find(readReplay))//ok
-    {
-      found = true;
-      break;
-    }
-  
-    countTimeCommand++;
-  }
-  
-  if(found == true)
-  {
-    Serial.println("OYI");
-    countTrueCommand++;
-    countTimeCommand = 0;
-  }
-  
-  if(found == false)
-  {
-    Serial.println("Fail");
-    countTrueCommand = 0;
-    countTimeCommand = 0;
-  }
-  
-  found = false;
- }
 
 /*
 * Name: find
@@ -479,7 +474,7 @@ String  readSerialMessage(){
 * Returns: The response from the esp8266 (if there is a reponse)
 */
 String  readWifiSerialMessage(){
-  char value[100]; 
+  char value[20]; 
   int index_count =0;
   while(esp8266.available()>0){
     value[index_count]=esp8266.read();
