@@ -22,30 +22,32 @@ void setup() {
   
   // Start the TCP server
   server.begin();
+  server.setNoDelay(1);
 }
 
 void loop() {
     if (!client.connected()) {
         // try to connect to a new client
         client = server.available();
+        client.setNoDelay(1);
     } else {
         // read data from the connected client
         if (client.available() > 0) {
-            String message = readWifiSerialMessage();
+            String message = client.readStringUntil('\n');
+            message.trim();
             Serial.println(message);
-            //client.println(message);
-            //Serial.println("server printed something");
         }
     }
+    
     if (Serial.available() > 0) {
       // read the incoming byte:
-      String uno_resp = Serial.readString();
-
+      String uno_resp = Serial.readStringUntil('\n');
+      uno_resp.trim();
       // say what you got:
       client.println(uno_resp);
-    }    
+    }  
 } 
-
+/*
 String  readWifiSerialMessage(){
   char value[100]; 
   int index_count =0;
@@ -57,4 +59,4 @@ String  readWifiSerialMessage(){
   String str(value);
   str.trim();
   return str;
-}
+}*/
