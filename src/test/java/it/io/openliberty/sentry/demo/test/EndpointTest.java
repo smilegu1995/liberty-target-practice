@@ -16,6 +16,11 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.cxf.jaxrs.provider.jsrjsonp.JsrJsonpProvider;
 import org.junit.Test;
 
+import io.openliberty.sentry.demo.mongodb.MongoDBConnector;
+
+import io.openliberty.sentry.demo.model.DataBase;
+import io.openliberty.sentry.demo.model.game.stat.GameStat;;
+
 public class EndpointTest {
 	
     @Test
@@ -83,6 +88,49 @@ public class EndpointTest {
         // end::body[]
         response.close();
     }
+    @Test
+    
+    public void testNewDataBase(){
+    	System.out.println("test Data Base");
+    	MongoDBConnector DB = new MongoDBConnector();
+    	GameStat game1 = new GameStat("A", 111);
+    	DB.insertStat(game1);
+    	GameStat game2 = new GameStat("B", 345);
+    	DB.insertStat(game2);
+    	GameStat game3 = new GameStat("C", 188);
+    	DB.insertStat(game3);
+    	GameStat game4 = new GameStat("D", 235);
+    	DB.insertStat(game4);
+    	GameStat game5 = new GameStat("E", 346);
+    	DB.insertStat(game5);
+    	GameStat game6 = new GameStat("F", 864);
+    	DB.insertStat(game6);
+    	GameStat game7 = new GameStat("G", 132);
+    	DB.insertStat(game7);
+    	System.out.println(DB.topfive().toString());
+    	
+    }
+    /*
+    @Test
+    public void testDataBase() {
+    	System.out.println("test Data Base");
+    	DataBase mongo1 = new DataBase();
+    	mongo1.addtoDB(111, "A");
+    	mongo1.addtoDB(123, "b");
+    	mongo1.addtoDB(234, "q");
+    	mongo1.addtoDB(345, "w");
+    	mongo1.addtoDB(456, "e");
+    	mongo1.addtoDB(567, "r");
+    	mongo1.addtoDB(678, "t");
+    	mongo1.addtoDB(798, "y");
+    	mongo1.addtoDB(999, "u");
+    	
+    	mongo1.printDB();
+    	JsonObject obj = mongo1.topfive();
+    	
+    	System.out.println(obj.toString());
+    }
+    
     /*
     @Test
     public void testGameDataStream() throws Throwable {
