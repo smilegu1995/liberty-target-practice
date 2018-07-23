@@ -90,7 +90,7 @@ public class GameResource {
      		game = null;
      		game = new Game();
         	game.start();
-			game.startGameCycle();
+			
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -111,6 +111,12 @@ public class GameResource {
     @Path("gamestream")
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public void gameDataStream(@Context SseEventSink eventSink, @Context Sse sse){
+    	try {
+			game.startGameCycle();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
         Runnable r = new Runnable() {
             @Override
             public void run() {

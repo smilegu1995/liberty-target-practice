@@ -18,10 +18,10 @@ import io.openliberty.sentry.demo.tcp.TCPUtils;
 @ServerEndpoint(value = "/shipsocket")
 public class ShipSocket {
 	
-	static Ship spaceShip = null;
+	Ship spaceShip = null;
 	
 	@OnOpen
-	public void onOpen(Session session, EndpointConfig ec) {
+	public void onOpen(Session session, EndpointConfig ec) throws Exception {
 		// (lifecycle) Called when the connection is opened
 		System.out.println("Websocket open!");
 		spaceShip = Ship.getInstance();
@@ -40,6 +40,7 @@ public class ShipSocket {
 		// Endpoint/per-connection instances can see each other through sessions.
 
 		System.out.println("Got a message: " + message);
+		
 		if (spaceShip != null) {
 			if (message.equals("startShip")) {
 				spaceShip.startShip();
@@ -60,7 +61,7 @@ public class ShipSocket {
 			else if (message.equals("fireLaser")) {
 				spaceShip.sendCommand(TCPCommand.S_FIRELASER);
 			} 
-		}		
+		}	
 	}
 
 	@OnError

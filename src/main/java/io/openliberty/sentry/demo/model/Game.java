@@ -70,6 +70,7 @@ public class Game implements Runnable{
     
     public void start() {
     	running = true;
+    	targets.cycleAllTargets();
         Thread t = new Thread(this);
         t.setDaemon(true);
         t.start();

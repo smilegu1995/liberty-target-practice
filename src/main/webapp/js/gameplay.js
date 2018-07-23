@@ -33,19 +33,19 @@ $("#fireLaser").click(function() {
 // Mouse action
 $("#arrowUp").mousedown(function() {
   moveTilt = true;
-  moveUp -= 2;
+  moveUp -= 1;
 });
 $("#arrowDown").mousedown(function() {
   moveTilt = true;
-  moveDown += 2;
+  moveDown += 1;
 });
 $("#arrowLeft").mousedown(function() {
   movePan = true;
-  moveLeft += 4;
+  moveLeft += 2;
 });
 $("#arrowRight").mousedown(function() {
   movePan = true;
-  moveRight -= 4;
+  moveRight -= 2;
 });
 
 $("#arrowUp").mouseup(function() {
@@ -97,19 +97,19 @@ function arrowDown(e) {
   if (e.which == 37) {
     //console.log("Keyboard - Moving left!!");
     movePan = true;
-    moveLeft += 4;
+    moveLeft += 2;
   } else if (e.which == 39) {
     //console.log("Keyboard - Moving right!!");
     movePan = true;
-    moveRight -= 4;
+    moveRight -= 2;
   } else if (e.which == 38) {
     //console.log("Keyboard - Moving up!!");
     moveTilt = true;
-    moveUp -= 2;
+    moveUp -= 1;
   } else if (e.which == 40) {
     //console.log("Keyboard - Moving down!!");
     moveTilt = true;
-    moveDown += 2;
+    moveDown += 1;
   }
 }
 
@@ -194,8 +194,8 @@ function panShip() {
     anglePan += moveLeft + moveRight;
     if (anglePan <= 50) {
       anglePan = 50;
-    } else if (anglePan >= 150) {
-      anglePan = 150;
+    } else if (anglePan >= 140) {
+      anglePan = 140;
     }
   }
 

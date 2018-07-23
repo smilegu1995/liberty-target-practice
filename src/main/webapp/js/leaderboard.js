@@ -16,6 +16,7 @@ var leaders = [{
 }];
 var x;
 var finalScore = document.getElementById('finalScore');
+var endMusic = $('#audio-end')[0];
 
 for (x in leaders) {
   document.getElementById('board').innerHTML +=
@@ -35,6 +36,7 @@ function endGame() {
   $.get("/SentryTargetChallenge/gameapp/game/leaderboard", function(data) {
     showFinalScore(data);
   });
+  endMusic.play();
 }
 
 function showFinalScore(data) {
