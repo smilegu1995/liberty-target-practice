@@ -72,10 +72,10 @@ printToTerminal();
 
 function printToTerminal() {
   type("Initiating systems...")
-    .then("Connecting to Target and Sentry systems... ")
+    .then("Connecting to Target and Spaceship systems... ")
     .then("Engaging all Targets... OK")
     .wait(500)
-    .then("Checking Ammunition... OK")
+    .then("Starting the Spaceship... OK")
     .wait(500)
     .then("Laser Energy output... 98.9%")
     .wait(500)
