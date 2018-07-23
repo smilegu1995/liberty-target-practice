@@ -25,6 +25,10 @@ public class TCPUtils {
 	            	return TCPCommand.T_TARGET4;
 	            case "target5":
 	            	return TCPCommand.T_TARGET5;
+	            case "hitupdate":
+	            	return TCPCommand.T_UPDATEPIEZO;
+	            case "litupdate":
+	            	return TCPCommand.T_UPDATEPIEZO;
 	            default:
 	                System.out.println("invalid request cmd, not TCPCommand is matched.");
 	        }
@@ -69,7 +73,9 @@ public class TCPUtils {
 			case T_CYCLETARGETS:
 				return "T_C";
 			case T_UPDATELASER:
+				return "T_LV=";
 			case T_UPDATEPIEZO:
+				return "T_HV=";
 			case S_FIRELASER:
 				return "FIRE";
 			case S_PANSHIP:

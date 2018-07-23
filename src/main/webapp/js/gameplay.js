@@ -61,6 +61,11 @@ $("#arrowRight").mouseup(function() {
   panShip();
 });
 
+var scoreMusic = $('#audio-score')[0];
+var scoreMusic500 = $('#audio-score500')[0];
+var laserSound = $('#audio-laser')[0];
+var countdownSound = $('#audio-cd')[0];
+
 // Run on the page load
 $(startGame());
 
@@ -147,6 +152,7 @@ function toggleBeamOn() {
   $('.fire-key:active').css('box-shadow',
     '0px 0px 0 #3C93D5, 0px 0px 0 #15B358, 0px 0px 0 #15B358, -1px 1px 0 #15B358'
   );
+
 }
 
 function toggleBeamOff() {
@@ -159,6 +165,7 @@ function toggleBeamOff() {
   $('.fire-key:active').css('box-shadow',
     '0px 0px 0 #CE3323, 0px 0px 0 #CE3323, 0px 0px 0 #CE3323, -1px 1px 0 #CE3323'
   );
+  laserSound.play();
 }
 
 function tiltShip() {
@@ -206,6 +213,13 @@ function updateScore(event) {
   console.log("EVENT DATA: " + event.data);
   var gameevent = JSON.parse(event.data);
   scoreVal.textContent = gameevent.score;
+  var score = parseInt(gameevent.score);
+  if (score % 500 == 0 && score > 0){
+    scoreMusic500.play();
+  } else {
+    scoreMusic.play();
+  }
+  
 }
 
 function displayTime(decSeconds) {
@@ -230,7 +244,9 @@ function runTimer() {
   // start interval
   runningTimer = setInterval(() => {
     const runTimer = timer--;
-
+    if (runTimer == 100) {
+      countdownSound.play();
+    }
     // if time is up (reached max of 60 secs) stop timer
     if (runTimer < countDownTime) {
       clearInterval(runningTimer);

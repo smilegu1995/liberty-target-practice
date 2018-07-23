@@ -1,21 +1,24 @@
 $("#startBtn").click(function() {
-  window.location.replace("terminal.html");
   initializeGame();
 });
 
 function initializeGame() {
   // To Do
-  var user = $("#userName").val();
-
-  $.ajax({
-    type: "POST",
-    url: "/SentryTargetChallenge/gameapp/game",
-    data: user,
-    success: success,
-    dataType: "text"
-  });
+	var user = $("#userName").val();
+	console.log(user);
+	if (user === ""){
+		alert("Please enter a valid player name");
+	} else {
+		$.ajax({
+			  type: "POST",
+			  url: "/SentryTargetChallenge/gameapp/game/" + user,
+			  success: success,
+			  dataType: "json"
+			});		
+	}
 }
 
 function success() {
-  console.log("game started!");
+	console.log("game started!");
+	window.location.replace("terminal.html");
 }
