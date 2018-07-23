@@ -18,6 +18,7 @@ import javax.ws.rs.sse.Sse;
 import javax.ws.rs.sse.SseEventSink;
 
 import io.openliberty.sentry.demo.model.GameEvent;
+import io.openliberty.sentry.demo.model.game.stat.GameStat;
 import io.openliberty.sentry.demo.model.Game;
 
 //tag::header[]
@@ -88,7 +89,7 @@ public class GameResource {
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
      	 try {
      		game = null;
-     		game = new Game();
+     		game = new Game(new GameStat(playerId));
         	game.start();
 			
 		} catch (Exception e1) {
@@ -142,14 +143,6 @@ public class GameResource {
 					e.printStackTrace();
 				}
             	System.out.println("game cleaned up successfully");
-            	/*
-				try {
-					if (game != null)
-						game.stopGameCycle();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}*/
             }
         };
         new Thread(r).start();   	
@@ -163,7 +156,7 @@ public class GameResource {
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
     	 String result = "no result";
      	 try {
-     		game = new Game();
+     		game = new Game(new GameStat("player1"));
         	game.start();
 			game.testGameCycle();
 		} catch (Exception e1) {

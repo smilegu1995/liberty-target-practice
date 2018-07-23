@@ -6,14 +6,24 @@ public class GameStat implements Comparable<GameStat>{
 	
 	private static final AtomicInteger gameCounter = new AtomicInteger(0); 
 	private int gameId;
-	private int score;
+	private int score = 0;
 	private String playerId;
 	private int rank;
 	
+	public GameStat(String playerId) {
+		gameId = gameCounter.incrementAndGet();
+		this.playerId = playerId;
+	}
+	
+	/**
+	 * for testing only
+	 * @param playerId
+	 * @param score
+	 */
 	public GameStat(String playerId, int score) {
 		gameId = gameCounter.incrementAndGet();
-		this.score = score;
 		this.playerId = playerId;
+		this.score = score;
 	}
 	
 	public int getGameId() {
@@ -32,7 +42,10 @@ public class GameStat implements Comparable<GameStat>{
 		return rank;
 	}
 
-
+	public void incrementScore() {
+		this.score += 100;
+	}
+	
 	public void setRank(int rank) {
 		this.rank = rank;
 	}
