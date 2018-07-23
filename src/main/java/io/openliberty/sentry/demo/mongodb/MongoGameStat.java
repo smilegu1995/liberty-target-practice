@@ -18,6 +18,12 @@ public class MongoGameStat {
 		score = stat.getScore();
 	}
 	
+	public MongoGameStat(String playername, ObjectId oid, int playerscore) {
+		id = oid;
+		playerId = playername;
+		score = playerscore;
+	}
+	
 	public ObjectId getId() {
 		return id;
 	}
