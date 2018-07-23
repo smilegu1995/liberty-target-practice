@@ -18,7 +18,6 @@ import org.junit.Test;
 
 import io.openliberty.sentry.demo.mongodb.MongoDBConnector;
 
-import io.openliberty.sentry.demo.model.DataBase;
 import io.openliberty.sentry.demo.model.game.stat.GameStat;;
 
 public class EndpointTest {
@@ -88,7 +87,7 @@ public class EndpointTest {
         // end::body[]
         response.close();
     }
-    @Test
+
     
     public void testNewDataBase(){
     	System.out.println("test Data Base");

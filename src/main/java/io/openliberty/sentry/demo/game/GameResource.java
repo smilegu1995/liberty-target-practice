@@ -8,9 +8,11 @@ import javax.json.JsonObjectBuilder;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.sse.OutboundSseEvent;
 import javax.ws.rs.sse.Sse;
 import javax.ws.rs.sse.SseEventSink;
@@ -80,10 +82,10 @@ public class GameResource {
     
     
     @POST
-    public JsonObject newGame(){
+    @Path("/{playerid}")
+    public Response newGame(@PathParam("playerid")String playerId){
         // tag::method-contents[]
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
-    	 String result = "no result";
      	 try {
      		game = null;
      		game = new Game();
@@ -94,11 +96,15 @@ public class GameResource {
 				e1.printStackTrace();
 	    	 builder.add("result", "failed");
 	    	 builder.add("reason", e1.getMessage());
-	    	 return builder.build();
+	    	 return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+	                    .entity(builder.build())
+	                        .build();
 			
 		}
-    	builder.add("result", result);
-    	return builder.build();
+    	builder.add("result", "success");
+    	builder.add("playerId", playerId);
+   	 	return Response.ok(builder.build())
+                 .build();
     }
     
     @GET

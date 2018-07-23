@@ -68,6 +68,15 @@ $("#alldown_button").click(function() {
 $("#cycle_button").click(function() {
   sendDeviceCommandReq("targets", "cycle");
 });
+$("#hitupdate_button").click(function() {
+  var hitvalue = $("#hitinput").val();
+  sendDeviceCommandReq("targets", "hitupdate", hitvalue);
+});
+$("#litupdate_button").click(function() {
+  var litvalue = $("#litinput").val();
+  sendDeviceCommandReq("targets", "litupdate", litvalue);
+});
+
 $("#ship_firebutton").click(function() {
   sendSocket("fireLaser");
 });
