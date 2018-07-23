@@ -394,7 +394,7 @@ small{
     margin: 20px auto;
     transform: translate3d(0, 0, 0);
     transition: box-shadow .1s linear, transform .1s linear;
-    width: 190%;
+    width: 100%;
     cursor: pointer;
   }
 
@@ -402,6 +402,10 @@ small{
     box-shadow: 0px 0px 0 #15B358, 0px 0px 0 #15B358, 0px 0px 0 #15B358, -1px 1px 0 #15B358;
     transform: translate3d(-3px, 3px, 0);
     color: #fff;
+  }
+
+  #fireLaser {
+    margin-right: 50%;
   }
 
 	/* Initiate Auto-Pulse animations */
