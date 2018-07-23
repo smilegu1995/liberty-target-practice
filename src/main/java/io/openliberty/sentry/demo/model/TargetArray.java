@@ -53,7 +53,7 @@ public class TargetArray extends IoTObject {
 	}
 	
 	public void cycleAllTargets(){
-		
+		sendCommand(TCPCommand.T_CYCLETARGETS);
 	}
 	
 	public void setTargetState(){

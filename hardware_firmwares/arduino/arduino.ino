@@ -41,7 +41,7 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 //#define SERVOMAX  375 // this is the 'maximum' pulse length count (out of 4096)
 #define SERVOMIN  375 // this is the 'minimum' pulse length count (out of 4096)
 #define SERVOMAX  160  // this is the 'maximum' pulse length count (out of 4096)
-#define LIT_LIMIT 240  // laser usually hits 40-50. Ambient room lighting around 6-7
+#define LIT_LIMIT 220  // laser usually hits 40-50. Ambient room lighting around 6-7
 #define LIT_LIMIT0 200  // laser usually hits 40-50. Ambient room lighting around 6-7
 
 const int knockSensor = A1; // where we connect z
@@ -273,7 +273,7 @@ void gameCycleStart(){
     
     
       litValue = map(analogRead(TargetSensor), 0, 1023, 0, 255);
-      //Serial.println(litValue);
+      Serial.println(litValue);
       //Serial.println(touchValue);
       if (litValue > LIT_LIMIT || touchValue > threshold) {      
           pwm.setPWM(servonum, 0, servMax[servonum]);
@@ -284,7 +284,7 @@ void gameCycleStart(){
             //sendToWifi("\nvalidhit", 10, false);
           }
           count++;
-          if (millis() - startTime > 62000){
+          if (millis() - startTime > 61000){
             game = false;
             Serial.println("Exiting Game Cycle");
             break;
@@ -304,7 +304,7 @@ void gameCycleStart(){
           visitedTarget[servonum] = true;
           delay(2000);
       } else {
-          if (millis() - startTime > 62000){
+          if (millis() - startTime > 61000){
             game = false;
             Serial.println("Exiting Game Cycle");
             break;

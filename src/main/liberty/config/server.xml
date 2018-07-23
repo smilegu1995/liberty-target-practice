@@ -10,6 +10,5 @@
 
   <httpEndpoint httpPort="${default.http.port}" httpsPort="${default.https.port}"
       id="defaultHttpEndpoint" host="*" />
-
   <webApplication location="SentryTargetChallenge.war" contextRoot="${app.context.root}"/>
 </server>
