@@ -380,10 +380,10 @@ small{
 
   .fire-key {
     align-items: center;
-    background: #2ecc71;
+    background: #e74c3c;
     border-radius: 6px;
     padding: 10px 25px;
-    box-shadow: -1px 1px 0 #15B358, -2px 2px 0 #15B358, -3px 3px 0 #15B358, -4px 4px 0 #15B358;
+    box-shadow: -1px 1px 0 #CE3323, -2px 2px 0 #CE3323, -3px 3px 0 #CE3323, -4px 4px 0 #CE3323;
     color: #fff;
     display: inline-flex;
     text-decoration: none;
@@ -399,7 +399,7 @@ small{
   }
 
   .fire-key:active, .fire-key.press {
-    box-shadow: 0px 0px 0 #15B358, 0px 0px 0 #15B358, 0px 0px 0 #15B358, -1px 1px 0 #15B358;
+    box-shadow: 0px 0px 0 #CE3323, 0px 0px 0 #CE3323, 0px 0px 0 #CE3323, -1px 1px 0 #CE3323;
     transform: translate3d(-3px, 3px, 0);
     color: #fff;
   }
