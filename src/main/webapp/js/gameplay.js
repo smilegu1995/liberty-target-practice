@@ -188,10 +188,10 @@ function tiltShip() {
 function panShip() {
   if (movePan) {
     anglePan += moveLeft + moveRight;
-    if (anglePan <= 50) {
-      anglePan = 50;
-    } else if (anglePan >= 140) {
-      anglePan = 140;
+    if (anglePan <= 90) {
+      anglePan = 90;
+    } else if (anglePan >= 150) {
+      anglePan = 150;
     }
   }
 

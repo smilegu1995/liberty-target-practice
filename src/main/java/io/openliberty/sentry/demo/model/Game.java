@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.enterprise.context.ApplicationScoped;
 
 import io.openliberty.sentry.demo.model.game.stat.GameStat;
+import io.openliberty.sentry.demo.model.game.stat.GameStatsManager;
 
 
 @ApplicationScoped
@@ -17,25 +18,23 @@ public class Game implements Runnable{
 	
 	private AtomicBoolean iswaiting = new AtomicBoolean(false);
 	private GameStat stat;
+	private GameStatsManager statsManager;
+	boolean isPracticeGame = false;
+	
 	public static final int GAMETIME = 60000;
 	
-	//private static Game gameinstance = new Game();
-	
 	public Game(GameStat stat) throws Exception {
+		this(stat, false);
+	}
+	
+	public Game(GameStat stat, boolean isPractice) throws Exception {
 		this.stat = stat;
 		targets = TargetArray.getInstance();
 		if (targets == null) {
 			throw new Exception("Targets array is not connected. Game cannot be started");
 		}
+		isPracticeGame = isPractice;
 	}
-	
-	/*
-	public synchronized static Game getInstance() {
-		if (!!!gameinstance.isRunning()) {
-			gameinstance.start();
-		}
-		return gameinstance;
-	}*/
 	
 	public boolean test() throws IOException {
 		return targets.ping();
@@ -48,6 +47,8 @@ public class Game implements Runnable{
     
     public void stopGameCycle() throws Exception {
     	System.out.println("Stop game cycle");
+    	if (!!!isPracticeGame)
+    		writeScore();
     	running = false;
     	iswaiting.set(false);
     	targets.stopGameCycle();
@@ -131,6 +132,11 @@ public class Game implements Runnable{
 			}
 		}
 		System.out.println("finished running on game thread");
+	}
+	
+	private void writeScore() {
+		statsManager = GameStatsManager.getInstance();
+		statsManager.writeGameStat(stat);
 	}
 	
 	public synchronized void updateScore(){

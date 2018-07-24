@@ -1,8 +1,11 @@
 package io.openliberty.sentry.demo.game;
 
 
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.json.Json;
+import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.ws.rs.GET;
@@ -19,6 +22,7 @@ import javax.ws.rs.sse.SseEventSink;
 
 import io.openliberty.sentry.demo.model.GameEvent;
 import io.openliberty.sentry.demo.model.game.stat.GameStat;
+import io.openliberty.sentry.demo.model.game.stat.GameStatsManager;
 import io.openliberty.sentry.demo.model.Game;
 
 //tag::header[]
@@ -33,12 +37,11 @@ public class GameResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
 	public JsonObject getGameStat() {
-    	
         // tag::method-contents[]
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
     	 builder.add("game", "getGameStat");
-    	 
-		return builder.build();
+    	 return builder.build();
+    	 // end::method-contents[]
 	}
 	
     // tag::listContents[]
@@ -47,13 +50,22 @@ public class GameResource {
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject listLeaderBoard() {
         // tag::method-contents[]
+    	 JsonBuilderFactory factory = Json.createBuilderFactory(null);
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
+    	 GameStatsManager statsManager = GameStatsManager.getInstance();
+    	 List<GameStat> topFive = statsManager.getTopFiveScoreStats();
+    	 JsonObjectBuilder leaderBuilder = Json.createObjectBuilder();
+    	 for (int i = 0; i < topFive.size(); i++) {
+    		 leaderBuilder.add(String.valueOf(i), factory.createObjectBuilder()
+    				 .add("playerId", topFive.get(i).getPlayerId())
+    				 .add("score", topFive.get(i).getScore()));
+    	 }
+    	 builder.add("leaders", leaderBuilder.build());
     	 if (game != null)
     		 builder.add("score", String.valueOf(game.getScore()));
     	 else 
     		 builder.add("score", "0");
     	 return builder.build();
-
     	 // end::method-contents[]
     }
     // end::listContents[]
@@ -73,7 +85,6 @@ public class GameResource {
 			}
     	 }
 
-    	 
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
     	 builder.add("result", "success");
     	 return builder.build();
@@ -90,6 +101,32 @@ public class GameResource {
      	 try {
      		game = null;
      		game = new Game(new GameStat(playerId));
+        	game.start();
+			
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+	    	 builder.add("result", "failed");
+	    	 builder.add("reason", e1.getMessage());
+	    	 return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+	                    .entity(builder.build())
+	                        .build();
+			
+		}
+    	builder.add("result", "success");
+    	builder.add("playerId", playerId);
+   	 	return Response.ok(builder.build())
+                 .build();
+    }
+    
+    @POST
+    @Path("/practice/{playerid}")
+    public Response newPracticeGame(@PathParam("playerid")String playerId){
+        // tag::method-contents[]
+    	 JsonObjectBuilder builder = Json.createObjectBuilder();
+     	 try {
+     		game = null;
+     		game = new Game(new GameStat(playerId), true);
         	game.start();
 			
 		} catch (Exception e1) {
