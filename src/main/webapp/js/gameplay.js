@@ -13,20 +13,20 @@ var moveLeft = 0;
 var moveRight = 0;
 var websocket = null;
 var websocket_url = null;
-var beamToggle = false;
 window.addEventListener('keyup', arrowUp)
 window.addEventListener('keydown', arrowDown)
 
 $("#fireLaser").click(function() {
-  if (!beamToggle) {
-    beamText.textContent = "BEAM OFF";
-    toggleBeamOff();
-    beamToggle = true;
-  } else {
-    beamText.textContent = "BEAM ON";
-    toggleBeamOn();
-    beamToggle = false;
-  }
+  /*  if (!beamToggle) {
+      beamText.textContent = "BEAM OFF";
+      toggleBeamOff();
+      beamToggle = true;
+    } else {
+      beamText.textContent = "BEAM ON";
+      toggleBeamOn();
+      beamToggle = false;
+    }*/
+  toggleBeamOff();
   fireLaser();
 });
 
@@ -114,7 +114,8 @@ function arrowUp(e) {
   if (e.which == 32) {
     const key = document.querySelector(`.fire-key[data-key="${e.which}"]`);
     key.classList.remove('press');
-    if (!beamToggle) {
+    //toggleBeamOff();
+    /*if (!beamToggle) {
       beamText.textContent = "BEAM OFF";
       toggleBeamOff();
       beamToggle = true;
@@ -122,7 +123,7 @@ function arrowUp(e) {
       beamText.textContent = "BEAM ON";
       toggleBeamOn();
       beamToggle = false;
-    }
+    }*/
   } else {
     const key = document.querySelector(`.arrow-key[data-key="${e.which}"]`);
     key.classList.remove('press');
@@ -134,6 +135,7 @@ function arrowUp(e) {
   } else if (e.which == 38 || e.which == 40) {
     tiltShip();
   } else if (e.which == 32) {
+    laserSound.play();
     fireLaser();
   }
 }
@@ -152,7 +154,7 @@ function toggleBeamOn() {
 }
 
 function toggleBeamOff() {
-  $('.fire-key').css('background', '#e74c3c').css('box-shadow',
+  /*$('.fire-key').css('background', '#e74c3c').css('box-shadow',
     '-1px 1px 0 #CE3323, -2px 2px 0 #CE3323, -3px 3px 0 #CE3323, -4px 4px 0 #CE3323'
   );
   $('.fire-key.press').css('box-shadow',
@@ -160,7 +162,7 @@ function toggleBeamOff() {
   );
   $('.fire-key:active').css('box-shadow',
     '0px 0px 0 #CE3323, 0px 0px 0 #CE3323, 0px 0px 0 #CE3323, -1px 1px 0 #CE3323'
-  );
+  );*/
   laserSound.play();
 }
 
