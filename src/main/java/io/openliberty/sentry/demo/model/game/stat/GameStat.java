@@ -2,18 +2,36 @@ package io.openliberty.sentry.demo.model.game.stat;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class GameStat implements Comparable<GameStat>{
+import io.openliberty.sentry.demo.mongodb.MongoGameStat;
+
+public class GameStat {
 	
 	private static final AtomicInteger gameCounter = new AtomicInteger(0); 
 	private int gameId;
-	private int score;
+	private int score = 0;
 	private String playerId;
 	private int rank;
 	
+	public GameStat(String playerId) {
+		gameId = gameCounter.incrementAndGet();
+		this.playerId = playerId;
+	}
+	
+	public GameStat(MongoGameStat ms) {
+		gameId = ms.getId().getCounter();
+		playerId = ms.getPlayerId();
+		score = ms.getScore();
+	}
+	
+	/**
+	 * for testing only
+	 * @param playerId
+	 * @param score
+	 */
 	public GameStat(String playerId, int score) {
 		gameId = gameCounter.incrementAndGet();
-		this.score = score;
 		this.playerId = playerId;
+		this.score = score;
 	}
 	
 	public int getGameId() {
@@ -32,16 +50,8 @@ public class GameStat implements Comparable<GameStat>{
 		return rank;
 	}
 
-
-	public void setRank(int rank) {
-		this.rank = rank;
+	public void incrementScore() {
+		this.score += 100;
 	}
-
-
-	@Override
-	public int compareTo(GameStat o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
+		
 }

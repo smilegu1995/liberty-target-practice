@@ -1,4 +1,4 @@
-var leaders = [{
+/*var leaders = [{
   name: "Libby",
   points: "124321"
 }, {
@@ -13,11 +13,11 @@ var leaders = [{
 }, {
   name: "Martian",
   points: "1134"
-}];
+}];*/
 var x;
 var finalScore = document.getElementById('finalScore');
 var endMusic = $('#audio-end')[0];
-
+/*
 for (x in leaders) {
   document.getElementById('board').innerHTML +=
     '<li class="rank">' +
@@ -26,7 +26,7 @@ for (x in leaders) {
     '<small class="pts">' + leaders[x].points +
     '</small></li>';
   console.log(leaders[x]);
-}
+}*/
 
 
 // Run on the page load
@@ -34,16 +34,27 @@ $(endGame());
 
 function endGame() {
   $.get("/SentryTargetChallenge/gameapp/game/leaderboard", function(data) {
-    showFinalScore(data);
+    showGameStats(data);
   });
   endMusic.play();
 }
 
-function showFinalScore(data) {
+function showGameStats(data) {
   console.log("GET DATA: " + JSON.stringify(data));
   //var score = JSON.parse(data);
   console.log("GET score: " + data.score);
   finalScore.textContent = data.score;
+  var leaders = data.leaders;
+  console.log(leaders);
+  for (x in leaders) {
+    var gamestat = leaders[x];
+    document.getElementById('board').innerHTML +=
+    '<li class="rank">' +
+    '<h2 class="name">' + gamestat.playerId +
+    '</h2>' +
+    '<small class="pts">' + gamestat.score +
+    '</small></li>';    
+  }
 }
 
 $("#startOverBtn").click(function() {

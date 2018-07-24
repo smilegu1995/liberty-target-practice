@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
+import java.util.List;
 
 import javax.json.JsonObject;
 import javax.ws.rs.client.Client;
@@ -17,7 +18,7 @@ import org.apache.cxf.jaxrs.provider.jsrjsonp.JsrJsonpProvider;
 import org.junit.Test;
 
 import io.openliberty.sentry.demo.mongodb.MongoDBConnector;
-
+import io.openliberty.sentry.demo.mongodb.MongoGameStat;
 import io.openliberty.sentry.demo.model.game.stat.GameStat;;
 
 public class EndpointTest {
@@ -88,10 +89,11 @@ public class EndpointTest {
         response.close();
     }
 
-    
+    @Test
     public void testNewDataBase(){
     	System.out.println("test Data Base");
-    	MongoDBConnector DB = new MongoDBConnector();
+    	MongoDBConnector DB = MongoDBConnector.getInstance(true);
+    	DB.dropTestCollection();
     	GameStat game1 = new GameStat("A", 111);
     	DB.insertStat(game1);
     	GameStat game2 = new GameStat("B", 345);
@@ -106,8 +108,12 @@ public class EndpointTest {
     	DB.insertStat(game6);
     	GameStat game7 = new GameStat("G", 132);
     	DB.insertStat(game7);
-    	System.out.println(DB.topfive().toString());
-    	
+    	List<MongoGameStat> topFive = DB.topfive();
+    	System.out.println(topFive.toString());
+    	assertEquals("should return 5 elements in total", 5, topFive.size());
+    	assertTrue("The first stat should be F", topFive.get(0).getPlayerId().equals("F"));
+    	assertTrue("The last stat should be C", topFive.get(4).getPlayerId().equals("C"));
+    	DB.dropTestCollection();
     }
     /*
     @Test

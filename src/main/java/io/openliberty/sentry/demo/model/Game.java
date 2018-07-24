@@ -2,9 +2,11 @@ package io.openliberty.sentry.demo.model;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.context.ApplicationScoped;
+
+import io.openliberty.sentry.demo.model.game.stat.GameStat;
+import io.openliberty.sentry.demo.model.game.stat.GameStatsManager;
 
 
 @ApplicationScoped
@@ -15,26 +17,24 @@ public class Game implements Runnable{
 	private boolean running = false;
 	
 	private AtomicBoolean iswaiting = new AtomicBoolean(false);
-	private AtomicInteger score = new AtomicInteger(0);
+	private GameStat stat;
+	private GameStatsManager statsManager;
+	boolean isPracticeGame = false;
 	
 	public static final int GAMETIME = 60000;
 	
-	//private static Game gameinstance = new Game();
+	public Game(GameStat stat) throws Exception {
+		this(stat, false);
+	}
 	
-	public Game() throws Exception {
+	public Game(GameStat stat, boolean isPractice) throws Exception {
+		this.stat = stat;
 		targets = TargetArray.getInstance();
 		if (targets == null) {
 			throw new Exception("Targets array is not connected. Game cannot be started");
 		}
+		isPracticeGame = isPractice;
 	}
-	
-	/*
-	public synchronized static Game getInstance() {
-		if (!!!gameinstance.isRunning()) {
-			gameinstance.start();
-		}
-		return gameinstance;
-	}*/
 	
 	public boolean test() throws IOException {
 		return targets.ping();
@@ -47,6 +47,8 @@ public class Game implements Runnable{
     
     public void stopGameCycle() throws Exception {
     	System.out.println("Stop game cycle");
+    	if (!!!isPracticeGame)
+    		writeScore();
     	running = false;
     	iswaiting.set(false);
     	targets.stopGameCycle();
@@ -79,7 +81,6 @@ public class Game implements Runnable{
     public void reset() throws Exception{
     	System.out.println("resetting the game");
     	running = false;
-    	score.set(0);
         synchronized(this) {
         	iswaiting.set(false);
             this.notifyAll();
@@ -100,7 +101,6 @@ public class Game implements Runnable{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		score.set(0);
 		System.out.println("Start game on new thread " + String.valueOf(running));
 		while (running){
 			if (iswaiting.get()) {
@@ -132,36 +132,18 @@ public class Game implements Runnable{
 			}
 		}
 		System.out.println("finished running on game thread");
-		/*
-        synchronized(this) {
-        	int count = 0;
-        	while (count < 3) {
-            	if(iswaiting.get())
-            		this.notifyAll();
-            	count++;
-            	try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	}
-
-        }*/
-		//read tcp message in while loop
+	}
+	
+	private void writeScore() {
+		statsManager = GameStatsManager.getInstance();
+		statsManager.writeGameStat(stat);
 	}
 	
 	public synchronized void updateScore(){
-		//long scoreInterval = (System.currentTimeMillis() - lastScoreTime) / 1000;
-		//int timeBonus = 10;
-		//if (scoreInterval != 0)
-			//timeBonus += (int) (100 / scoreInterval);
-		//System.out.println("Score 50 + Time Bonus " + timeBonus);
-		score.addAndGet(100);
-		//score.addAndGet(timeBonus);
+		stat.incrementScore();
 	}
 	
 	public int getScore(){
-		return score.get();
+		return stat.getScore();
 	}
 }

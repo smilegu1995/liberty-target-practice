@@ -33,5 +33,8 @@ public class MongoGameStat {
 	public int getScore() {
 		return score;
 	}	
+	public int getGameStatGameId() {
+		return id.getCounter();
+	}
 
 }
