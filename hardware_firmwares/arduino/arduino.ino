@@ -41,15 +41,18 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 //#define SERVOMAX  375 // this is the 'maximum' pulse length count (out of 4096)
 #define SERVOMIN  375 // this is the 'minimum' pulse length count (out of 4096)
 #define SERVOMAX  160  // this is the 'maximum' pulse length count (out of 4096)
-#define LIT_LIMIT 220  // laser usually hits 40-50. Ambient room lighting around 6-7
+#define LIT_LIMIT 230  // laser usually hits 40-50. Ambient room lighting around 6-7
 #define LIT_LIMIT0 200  // laser usually hits 40-50. Ambient room lighting around 6-7
 
 const int knockSensor = A1; // where we connect z
-const int threshold = 150;  // thresle used to store the last LED status, to toggle the light
+
 const int threshold0 = 30;  // thresle used to store the last LED status, to toggle the light
 const int selectKnockPins[3] = {2, 3, 4}; // S0~2, S1~3, S2~4
 const int servMin[5] = {380, 425, 400, 390, 395};
 const int servMax[5] = {180, 190, 200, 170, 160};
+
+int lit_limit = 230;
+int threshold = 150;  // thresle used to store the last LED status, to toggle the light
 
 // these variables will change:
 int touchValue = 0;      // variable to store the value read from the sensor pin
@@ -131,7 +134,6 @@ void loop() {
     String message = esp8266.readStringUntil('\n');
     Serial.println("received message from TCP Client: "+ message);
     if (message.length() > 2){
-      Serial.println("received message from TCP Client: "+ message);
       if(find(message,"ping")){  //receives ping from wifi
           esp8266.println("ok");   
       } else if (find(message, "T_AU")){
@@ -154,26 +156,43 @@ void loop() {
       } else if (find(message, "T_T")) {
          esp8266.println("ok");  
          toggleTarget(message);
+      } else if (find(message, "T_LV")) {
+         esp8266.println("ok");  
+         updateLitValue(message);
+      } else if (find(message, "T_HV")) {
+         esp8266.println("ok");  
+         updateHitValue(message);
       } else{
         esp8266.println("NC");  
         Serial.println("\n"+ message + " is not a valid input");
       }
     }
-
   }
   delay(100);
+}
+
+void updateLitValue(String arg){
+  int newLit = arg.substring(5).toInt();
+  lit_limit = newLit;
+  Serial.println("new lit limit is now" + String(lit_limit));
+}
+
+void updateHitValue(String arg){
+  int newHit = arg.substring(5).toInt();
+  threshold = newHit;
+  Serial.println("new lit limit is now" + String(threshold));
 }
 
 void toggleTarget(String arg){
   if (arg.equals("T_T1")){
       toggleTarget(0);
-  } else if (arg.equals("T_T2")){
+  } else if (find(arg, "T_T2")){
       toggleTarget(1);
-  } else if (arg.equals("T_T3")){
+  } else if (find(arg, "T_T3")){
       toggleTarget(2);
-  } else if (arg.equals("T_T4")){
+  } else if (find(arg, "T_T4")){
       toggleTarget(3);
-  } else if (arg.equals("T_T5")) {
+  } else if (find(arg, "T_T5")) {
       toggleTarget(4);
   } else{
       toggleTarget(0);
@@ -181,6 +200,7 @@ void toggleTarget(String arg){
 }
 
 void toggleTarget(int servNum){
+  Serial.println("toggle target" + servNum);
   if (targetStatus[servNum] == false){
     pwm.setPWM(servNum, 0, servMin[servNum]);
     targetStatus[servNum] = true;
@@ -273,7 +293,7 @@ void gameCycleStart(){
     
     
       litValue = map(analogRead(TargetSensor), 0, 1023, 0, 255);
-      Serial.println(litValue);
+      //Serial.println(litValue);
       //Serial.println(touchValue);
       if (litValue > LIT_LIMIT || touchValue > threshold) {      
           pwm.setPWM(servonum, 0, servMax[servonum]);
@@ -284,7 +304,7 @@ void gameCycleStart(){
             //sendToWifi("\nvalidhit", 10, false);
           }
           count++;
-          if (millis() - startTime > 61000){
+          if (millis() - startTime > 62000){
             game = false;
             Serial.println("Exiting Game Cycle");
             break;
@@ -304,7 +324,7 @@ void gameCycleStart(){
           visitedTarget[servonum] = true;
           delay(2000);
       } else {
-          if (millis() - startTime > 61000){
+          if (millis() - startTime > 62000){
             game = false;
             Serial.println("Exiting Game Cycle");
             break;
@@ -485,4 +505,3 @@ String  readWifiSerialMessage(){
   str.trim();
   return str;
 }
-

@@ -52,19 +52,24 @@ public class GameResource {
         // tag::method-contents[]
     	 JsonBuilderFactory factory = Json.createBuilderFactory(null);
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
-    	 GameStatsManager statsManager = GameStatsManager.getInstance();
-    	 List<GameStat> topFive = statsManager.getTopFiveScoreStats();
-    	 JsonObjectBuilder leaderBuilder = Json.createObjectBuilder();
-    	 for (int i = 0; i < topFive.size(); i++) {
-    		 leaderBuilder.add(String.valueOf(i), factory.createObjectBuilder()
-    				 .add("playerId", topFive.get(i).getPlayerId())
-    				 .add("score", topFive.get(i).getScore()));
-    	 }
-    	 builder.add("leaders", leaderBuilder.build());
-    	 if (game != null)
-    		 builder.add("score", String.valueOf(game.getScore()));
-    	 else 
+
+    	 if (game != null) {
+        	 JsonObjectBuilder leaderBuilder = Json.createObjectBuilder();
+        	 if (!!!game.isPracticeGame()) {
+            	 GameStatsManager statsManager = GameStatsManager.getInstance();
+            	 List<GameStat> topFive = statsManager.getTopFiveScoreStats();
+            	 for (int i = 0; i < topFive.size(); i++) {
+            		 leaderBuilder.add(String.valueOf(i), factory.createObjectBuilder()
+            				 .add("playerId", topFive.get(i).getPlayerId())
+            				 .add("score", topFive.get(i).getScore()));
+            	 }    		 
+        	 }
+        	 builder.add("leaders", leaderBuilder.build());    
+        	 builder.add("score", String.valueOf(game.getScore()));
+    	 } else  {
     		 builder.add("score", "0");
+    	 }
+    		 
     	 return builder.build();
     	 // end::method-contents[]
     }
@@ -95,6 +100,7 @@ public class GameResource {
     
     @POST
     @Path("/{playerid}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response newGame(@PathParam("playerid")String playerId){
         // tag::method-contents[]
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
@@ -120,7 +126,8 @@ public class GameResource {
     }
     
     @POST
-    @Path("/practice/{playerid}")
+    @Path("practice/{playerid}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response newPracticeGame(@PathParam("playerid")String playerId){
         // tag::method-contents[]
     	 JsonObjectBuilder builder = Json.createObjectBuilder();
