@@ -40,6 +40,9 @@ public class Game implements Runnable{
 		return targets.ping();
 	}
 	
+	public boolean isPracticeGame() {
+		return isPracticeGame;
+	}
 	
     public boolean isRunning() {
         return running;

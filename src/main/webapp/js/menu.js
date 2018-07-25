@@ -7,5 +7,5 @@ $("#admin_button").click(function() {
 });
 
 $("#practice_button").click(function() {
-  window.location.assign("index.html");
+  window.location.assign("index_practice.html");
 });

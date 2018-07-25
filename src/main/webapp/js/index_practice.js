@@ -11,7 +11,7 @@ function initializeGame() {
   } else {
     $.ajax({
       type: "POST",
-      url: "/SentryTargetChallenge/gameapp/game/" + user,
+      url: "/SentryTargetChallenge/gameapp/game/practice/" + user,
       success: success,
       error: fail,
       dataType: "json"
